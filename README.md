@@ -1,1 +1,0 @@
-# forestracker-mobile-app
