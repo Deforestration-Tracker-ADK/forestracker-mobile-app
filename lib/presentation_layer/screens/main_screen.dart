@@ -29,14 +29,15 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
+
+  void _changePage(value){
+    final cubit = context.read<NavigationCubit>();
+    cubit.navigate(value);
+    _controller.jumpToPage(value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<NavigationCubit>();
-
-    void _changePage(value){
-      cubit.navigate(value);
-      _controller.jumpToPage(value);
-    }
     return SafeArea(
       child: Scaffold(
           body: BlocListener<ConnectionCubit, ConnectionStates>(
@@ -56,6 +57,7 @@ class _MainPageState extends State<MainPage> {
               })
             },
             child: PageView(
+              physics: NeverScrollableScrollPhysics(),
               onPageChanged: _changePage,
               controller: _controller,
               children: _body,
@@ -63,6 +65,7 @@ class _MainPageState extends State<MainPage> {
           ),
           bottomNavigationBar: BlocBuilder<NavigationCubit, NavigationStates>(
               builder: (context, state) {
+                print(state.index);
             return BottomNavigationBar(
               elevation: 2.0,
               backgroundColor: Colors.white10,

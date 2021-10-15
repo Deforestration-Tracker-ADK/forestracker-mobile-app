@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 class Location{
-  double longitude;
-  double latitude;
+  final double longitude;
+  final double latitude;
 
   Location({this.longitude, this.latitude});
 
@@ -15,8 +15,8 @@ class Location{
 
   factory Location.fromJson(Map <String,dynamic> jsonData){
     return Location(
-        longitude: jsonData['longitude'] as double,
-        latitude: jsonData['latitude'] as double,
+        longitude: jsonData['lng'] as double,
+        latitude: jsonData['lat'] as double,
     );
   }
 
@@ -24,6 +24,11 @@ class Location{
     'longitude' : this.longitude,
     'latitude' : this.latitude,
   };
+
+  @override
+  String toString() {
+    return ('lat :  ${this.latitude} , lan : ${this.longitude} '  );
+  }
 
 }
 
@@ -44,10 +49,31 @@ class Place{
     'place_id' : this.placeId
   };
 
-  @override
-  String toString() {
-    return ('Description :  ${this.description}');
+  // @override
+  // String toString() {
+  //   return ('Description :  ${this.description}');
+  // }
+}
+
+class Geometry{
+  final Location location;
+
+  Geometry({this.location});
+
+  factory Geometry.fromJson(Map<String,dynamic> json){
+    return Geometry(
+      location: Location.fromJson(json['location'])
+    );
   }
 }
 
-//test
+class SearchedPlace{
+  final Geometry geometry;
+  SearchedPlace({this.geometry});
+
+  factory SearchedPlace.fromJson(Map<String,dynamic> json){
+    return SearchedPlace(
+      geometry: Geometry.fromJson(json['geometry'])
+    );
+  }
+}
