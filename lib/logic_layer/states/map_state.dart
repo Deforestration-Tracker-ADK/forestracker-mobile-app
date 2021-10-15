@@ -2,7 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:forest_tracker/data_layer/models/map.dart';
 
 abstract class MapStates extends Equatable{
-
+  final Location location;
+  MapStates({this.location});
 }
 
 class MapLoading extends MapStates{
@@ -16,13 +17,13 @@ class ResultLoading extends MapStates{
 }
 
 class CurrentLocation extends MapStates{
-  final double latitude;
-  final double longitude;
+  final Location location;
 
-  CurrentLocation({this.latitude, this.longitude});
+  CurrentLocation({this.location}):
+        super(location: location);
 
   @override
-  List<double> get props => [latitude,longitude];
+  List<Location> get props => [location];
 
 }
 
@@ -33,5 +34,14 @@ class SearchedPlaces extends MapStates{
 
   @override
   List<Place> get props => places;
+}
+
+class SelectedPlace extends MapStates{
+  final Location location;
+  SelectedPlace({this.location}):
+      super(location: location);
+
+  @override
+  List<Location> get props => [location];
 }
 

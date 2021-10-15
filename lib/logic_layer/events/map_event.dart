@@ -16,6 +16,14 @@ class SearchPlace extends MapEvents{
   List<Object> get props => [place];
 
 }
+
+class SelectPlace extends MapEvents{
+  final String placeId;
+  SelectPlace({this.placeId});
+  @override
+  List<Object> get props => [placeId];
+
+}
 class Dismiss extends MapEvents{
   @override
   List<Object> get props => const [];

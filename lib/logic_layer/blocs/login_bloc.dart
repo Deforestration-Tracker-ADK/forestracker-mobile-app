@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/data_layer/models/user.dart';
-import 'package:forest_tracker/data_layer/services/project_services.dart';
 import 'package:forest_tracker/data_layer/services/auth_service.dart';
 import 'package:forest_tracker/logic_layer/Events/login_event.dart';
 import 'package:forest_tracker/logic_layer/states/login_states.dart';

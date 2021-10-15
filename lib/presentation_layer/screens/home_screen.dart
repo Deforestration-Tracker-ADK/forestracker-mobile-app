@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       ),
       body: BlocBuilder<NewsBloc,NewsState>(
         builder: (context,state){
+          print(state);
           if(state is NewsLoading){
             return Center(child: CircularProgressIndicator());
           }

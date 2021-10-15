@@ -27,6 +27,7 @@ class ForestTracker extends StatelessWidget {
   final ProjectAPI projectAPI = ProjectAPI.getInstance();
   final NewsAPI newsAPI = NewsAPI();
   final geoLocator = GeoLocator();
+  final searchPlace = SearchPlaces();
 
   ForestTracker({@required this.connectivity});
 
@@ -41,7 +42,7 @@ class ForestTracker extends StatelessWidget {
         BlocProvider<NewsBloc>(create: (context) => NewsBloc(newsAPI: newsAPI)),
         BlocProvider<ProjectBloc>(create: (create)=>ProjectBloc(projectAPI: projectAPI)),
         BlocProvider<ProjectsBloc>(create: (context) => ProjectsBloc(projectAPI:projectAPI,projectBloc: context.read<ProjectBloc>())),
-        BlocProvider<MapBloc>(create: (context)=>MapBloc(geoLocator:geoLocator ))
+        BlocProvider<MapBloc>(create: (context)=>MapBloc(geoLocator:geoLocator ,searchPlaces: searchPlace))
       ],
       child: MaterialApp(
         initialRoute: WelcomeScreen.id,

@@ -6,31 +6,29 @@ import 'package:forest_tracker/logic_layer/states/map_state.dart';
 
 class MapBloc extends Bloc<MapEvents,MapStates>{
   final GeoLocator geoLocator;
-  final SearchPlaces searchPlaces = SearchPlaces();
+  final SearchPlaces searchPlaces;
 
-  MapBloc({this.geoLocator}) : super(MapLoading());
+  MapBloc({this.geoLocator,this.searchPlaces}) : super(MapLoading());
 
   @override
   Stream<MapStates> mapEventToState(MapEvents event) async*{
     if(event is GetCurrentLocation){
       yield* _getCurrentLocation();
     }
-    if(event is SearchPlace){
-      yield* getSearchPlaces(event);
+    if(event is SelectPlace){
+      yield* _getSearchedLocation(event);
     }
   }
 
   Stream<MapStates> _getCurrentLocation() async*{
     yield MapLoading();
     Location location = await geoLocator.getCurrentLocation();
-    yield CurrentLocation(latitude: location.latitude,longitude: location.longitude);
+    yield CurrentLocation(location: location);
   }
 
-  Stream<MapStates> getSearchPlaces(SearchPlace event) async*{
-    yield ResultLoading();
-    List<Place> places = await searchPlaces.getSearchedPlaces(event.place);
-    yield SearchedPlaces(places: places);
-
+  Stream<MapStates> _getSearchedLocation(SelectPlace event) async*{
+    SearchedPlace searchedPlace = await searchPlaces.searchPlace(event.placeId);
+    yield SelectedPlace(location: searchedPlace.geometry.location);
   }
 
 }
