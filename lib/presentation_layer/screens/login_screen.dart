@@ -7,8 +7,8 @@ import 'package:forest_tracker/logic_layer/blocs/login_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/navigation_cubit.dart';
 import 'package:forest_tracker/logic_layer/states/login_states.dart';
 import 'package:forest_tracker/presentation_layer/utilities/validation.dart';
-import 'package:forest_tracker/presentation_layer/widgets/components.dart';
-import 'package:forest_tracker/presentation_layer/widgets/widgets.dart';
+import 'package:forest_tracker/presentation_layer/utilities/components.dart';
+import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'main_screen.dart';

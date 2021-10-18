@@ -10,8 +10,8 @@ import 'package:forest_tracker/logic_layer/events/projects_event.dart';
 import 'package:forest_tracker/logic_layer/states/project_state.dart';
 import 'package:forest_tracker/logic_layer/states/projects_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/project_page.dart';
-import 'package:forest_tracker/presentation_layer/widgets/components.dart';
-import 'package:forest_tracker/presentation_layer/widgets/widgets.dart';
+import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
+import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 import 'applied_projects_screen.dart';
 import 'fav_projects_screen.dart';
 

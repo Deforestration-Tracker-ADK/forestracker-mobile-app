@@ -6,7 +6,7 @@ import 'package:forest_tracker/logic_layer/events/project_event.dart';
 import 'package:forest_tracker/logic_layer/events/projects_event.dart';
 import 'package:forest_tracker/logic_layer/states/projects_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/project_page.dart';
-import 'package:forest_tracker/presentation_layer/widgets/widgets.dart';
+import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 
 class FavProjectScreen extends StatefulWidget {
   static const String id = 'fav_project_screen';

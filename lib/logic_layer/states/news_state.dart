@@ -9,12 +9,25 @@ class NewsLoading extends NewsState{
   List<Object> get props => [];
 }
 
+class ArticleLoading extends NewsState{
+  @override
+  List<Object> get props => [];
+}
+
 class NewsLoaded extends NewsState{
   final List<Article> articles;
 
   NewsLoaded({this.articles});
   @override
   List<Article> get props => articles;
+}
+
+class ArticleLoaded extends NewsState{
+  final Article article;
+
+  ArticleLoaded({this.article});
+  @override
+  List<Article> get props => [article];
 }
 
 class LoadingError extends NewsState{

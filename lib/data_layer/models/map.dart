@@ -1,6 +1,6 @@
-import 'dart:convert';
+import 'package:equatable/equatable.dart';
 
-class Location{
+class Location extends Equatable{
   final double longitude;
   final double latitude;
 
@@ -30,11 +30,29 @@ class Location{
     return ('lat :  ${this.latitude} , lan : ${this.longitude} '  );
   }
 
+  @override
+  List<double> get props => [longitude,latitude];
+
+}
+class LocationName extends Equatable{
+  final String locationName;
+
+  LocationName({this.locationName});
+  factory LocationName.fromJson(Map<String,dynamic> json){
+    return LocationName(
+        locationName: json['formatted_address'] as String,
+    );
+  }
+
+  @override
+  List<String> get props => [locationName];
+
 }
 
-class Place{
+
+class Place extends Equatable{
   final String placeId;
-  String description;
+  final String description;
 
   Place({this.placeId,this.description});
 
@@ -49,13 +67,12 @@ class Place{
     'place_id' : this.placeId
   };
 
-  // @override
-  // String toString() {
-  //   return ('Description :  ${this.description}');
-  // }
+  @override
+  List<String> get props => [placeId,description];
+
 }
 
-class Geometry{
+class Geometry extends Equatable{
   final Location location;
 
   Geometry({this.location});
@@ -65,9 +82,12 @@ class Geometry{
       location: Location.fromJson(json['location'])
     );
   }
+
+  @override
+  List<Location> get props => [location];
 }
 
-class SearchedPlace{
+class SearchedPlace extends Equatable{
   final Geometry geometry;
   SearchedPlace({this.geometry});
 
@@ -76,4 +96,7 @@ class SearchedPlace{
       geometry: Geometry.fromJson(json['geometry'])
     );
   }
+
+  @override
+  List<Geometry> get props => [geometry];
 }

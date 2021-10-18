@@ -9,11 +9,11 @@ class LoadAllNews extends NewsEvent{
   List<Object> get props => [];
 }
 
-class ViewArticle extends NewsEvent{
-  final Source source;
+class LoadArticle extends NewsEvent{
+  final Article article;
 
-  ViewArticle({this.source});
+  LoadArticle({this.article});
 
   @override
-  List<Object> get props => [source];
+  List<Article> get props => [article];
 }

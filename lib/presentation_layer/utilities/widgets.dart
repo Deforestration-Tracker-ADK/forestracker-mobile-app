@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:forest_tracker/data_layer/models/article.dart';
 import 'package:forest_tracker/data_layer/models/project.dart';
 
+import 'components.dart';
+
 
 String buttonText = 'View more..';
 Function function = (){};
 
-Widget customNewsTile(Article article,BuildContext context) => Column(
+Widget customNewsTile(Article article,BuildContext context,Function onPressed) => Column(
   mainAxisAlignment: MainAxisAlignment.start,
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
@@ -34,7 +36,7 @@ Widget customNewsTile(Article article,BuildContext context) => Column(
         ),
       ),
     ),
-    buttonBar(buttonText,function),
+    buttonBar(buttonText,onPressed),
   ],
 );
 
@@ -182,3 +184,23 @@ Widget customTile(Project project, Function onPressed,  {Function onTap , bool n
     ],
   );
 }
+
+ListTile descriptionTile(String term1, String term2) {
+  return ListTile(
+      visualDensity: VisualDensity(vertical: -4),
+      minLeadingWidth: 0,
+      horizontalTitleGap: 5,
+      contentPadding: EdgeInsets.all(0),
+      title: Text(
+        term2,
+        style: TextFontDecoration.copyWith(
+            fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+        maxLines: double.maxFinite.toInt(),
+      ),
+      leading: Text(
+        term1,
+        style: TextFontDecoration.copyWith(
+            fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+      ));
+}
+

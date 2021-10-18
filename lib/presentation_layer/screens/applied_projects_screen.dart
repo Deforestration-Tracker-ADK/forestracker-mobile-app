@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forest_tracker/logic_layer/blocs/project_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/projects_bloc.dart';
 import 'package:forest_tracker/logic_layer/events/projects_event.dart';
-import 'package:forest_tracker/logic_layer/states/project_state.dart';
 import 'package:forest_tracker/logic_layer/states/projects_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/project_page.dart';
-import 'package:forest_tracker/presentation_layer/widgets/widgets.dart';
+import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 
 class AppliedProjectScreen extends StatefulWidget {
   static const String id = 'applied_project_screen';
