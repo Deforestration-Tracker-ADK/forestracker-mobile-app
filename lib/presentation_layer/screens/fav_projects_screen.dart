@@ -22,7 +22,6 @@ class _FavProjectScreenState extends State<FavProjectScreen> {
   }
 
   void _onDismiss(project,direction){
-    print('Byeee');
     final bloc = context.read<ProjectBloc>();
     bloc.add(FavProject(projectId: project.projectID, isFavourite: false));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
