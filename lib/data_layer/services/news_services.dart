@@ -15,7 +15,6 @@ class NewsAPI{
       List<dynamic> jSonBody = jSonData['articles'];
 
       List<Article> articles = jSonBody.map((dynamic data) => Article.fromJson(data)).toList();
-
       return articles;
     }
     else{

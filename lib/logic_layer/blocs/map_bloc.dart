@@ -21,7 +21,6 @@ class MapBloc extends Bloc<MapEvents,MapStates>{
   }
 
   Stream<MapStates> _getCurrentLocation() async*{
-    yield MapLoading();
     Location location = await geoLocator.getCurrentLocation();
     yield CurrentLocation(location: location);
   }

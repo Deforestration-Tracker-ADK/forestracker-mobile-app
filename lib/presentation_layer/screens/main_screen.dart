@@ -65,7 +65,6 @@ class _MainPageState extends State<MainPage> {
           ),
           bottomNavigationBar: BlocBuilder<NavigationCubit, NavigationStates>(
               builder: (context, state) {
-                print(state.index);
             return BottomNavigationBar(
               elevation: 2.0,
               backgroundColor: Colors.white10,

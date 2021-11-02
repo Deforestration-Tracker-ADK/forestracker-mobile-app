@@ -1,9 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-class Constant{
-  static String favProjects = 'Favorites';
-  static String appliedProjects = 'Applied Projects';
-  static List<String> props = [favProjects,appliedProjects];
-}
 
 const TextFieldDecoration = InputDecoration(
   hintText: 'Enter a value',
@@ -19,6 +15,13 @@ const TextFieldDecoration = InputDecoration(
     borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
+);
+
+const TextFontDecoration = TextStyle(
+  fontSize: 18,
+  fontStyle: FontStyle.normal,
+  color: Colors.black,
+  fontWeight: FontWeight.normal
 );
 
 

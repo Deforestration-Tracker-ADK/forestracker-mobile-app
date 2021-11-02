@@ -1,4 +1,6 @@
-class Project{
+import 'package:equatable/equatable.dart';
+
+class Project extends Equatable{
   int projectID;
   String projectName;
   String organization;
@@ -23,6 +25,11 @@ class Project{
         location :jsonData['location'] as String,
         isFav: jsonData['isFav'] as bool);
   }
+
+  @override
+  List<Object> get props => [projectID,projectName,organization,onDate,publishedDate,description,location,isFav];
+
+
 
 
 

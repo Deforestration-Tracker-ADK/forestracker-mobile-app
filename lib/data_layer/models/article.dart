@@ -1,6 +1,8 @@
-class Source{
-  String id;
-  String name;
+import 'package:equatable/equatable.dart';
+
+class Source extends Equatable{
+  final String id;
+  final String name;
 
   Source({this.id,this.name});
 
@@ -10,18 +12,21 @@ class Source{
       name: jsonData['name'] as String,
     );
   }
+
+  @override
+  List<String> get props => [id,name];
 }
 
 
-class Article{
-  Source source;
-  String author;
-  String title;
-  String description;
-  String url;
-  String urlToImage;
-  String publishedAt;
-  String content;
+class Article extends Equatable{
+  final Source source;
+  final String author;
+  final String title;
+  final String description;
+  final String url;
+  final String urlToImage;
+  final String publishedAt;
+  final String content;
 
   Article({this.source, this.author, this.title, this.description, this.url, this.urlToImage, this.publishedAt, this.content});
 
@@ -36,5 +41,8 @@ class Article{
       publishedAt: jsonData['publishedAt'] as String,
       content: jsonData['content'] as String,);
   }
+
+  @override
+  List<Object> get props => [source,author,title,description,url,urlToImage,publishedAt,content];
 }
 

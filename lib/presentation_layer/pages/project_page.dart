@@ -6,7 +6,7 @@ import 'package:forest_tracker/logic_layer/blocs/projects_bloc.dart';
 import 'package:forest_tracker/logic_layer/events/project_event.dart';
 import 'package:forest_tracker/logic_layer/states/project_state.dart';
 import 'package:forest_tracker/logic_layer/states/projects_state.dart';
-import 'package:forest_tracker/presentation_layer/widgets/widgets.dart';
+import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 
 class ProjectPage extends StatefulWidget {
   static const String id = 'project_page';
@@ -87,39 +87,25 @@ class _ProjectPageState extends State<ProjectPage> {
     return WillPopScope(
       onWillPop: () async=> !isLoading,
       child: Padding(
-        padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 8, top: 25),
+        padding: const EdgeInsets.only(left: 15.0, right: 8, bottom: 8, top: 25),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
           children: [
             Center(child: badgeIcon(width: 100, height: 100)),
             SizedBox(height: 30),
-            Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(project.projectName, style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),),
-                  SizedBox(height: 8,),
-                  Text(project.organization, style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400)),
-                  SizedBox(height: 8,),
-                  Text('Location : ${project.location}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400)),
-                  SizedBox(height: 8,),
-                  Text(project.onDate, style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400)),
-                  SizedBox(height: 8,),
-                  Text('Description : ${project.description}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400)),
-                  SizedBox(height: 8,),
-                  Text('Published Date : ${project.publishedDate}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400)),
-                  SizedBox(height: 8,),
-                  Text('Project Name : ${project.projectName}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400)),
-                  SizedBox(height: 8,),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
+            descriptionTile('Project : ',project.projectName),
+            SizedBox(height: 8,),
+            descriptionTile('Organization : ',project.organization),
+            SizedBox(height: 8,),
+            descriptionTile('Location : ',project.location),
+            SizedBox(height: 8,),
+            descriptionTile('Date : ',project.onDate),
+            SizedBox(height: 8,),
+            descriptionTile('Description : ',project.description),
+            SizedBox(height: 8,),
+            descriptionTile('Published Date : ',project.publishedDate),
+            SizedBox(height: 30),
             BlocConsumer<ProjectBloc, ProjectState>(
               listener: (context, state) {
                 if (state is LoadingState) {
