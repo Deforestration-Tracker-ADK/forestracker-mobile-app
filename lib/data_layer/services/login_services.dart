@@ -6,9 +6,9 @@ import 'auth_service.dart';
 class LoginAPI{
   final String email;
   final String password;
-  final url = Uri.parse('API');
   var jsonResponse;
   Map data;
+  final url = Uri.parse('API');
 
   LoginAPI({@required this.email, @required this.password}){
     data = {'email': this.email, 'password': this.password};
