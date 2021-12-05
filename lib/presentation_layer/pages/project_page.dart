@@ -30,6 +30,7 @@ class _ProjectPageState extends State<ProjectPage> {
           actionsAlignment: MainAxisAlignment.center,
         ));
   }
+
   Widget customActionButton(BuildContext context, Project project) {
     return customButton(
         onPressed: isLoading

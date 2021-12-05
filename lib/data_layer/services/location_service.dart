@@ -14,7 +14,7 @@ class GeoLocator{
 }
 
 class SearchPlaces{
-  static final String _apiKey = 'api';
+  static final String _apiKey = 'AIzaSyB6--enjSF9hvA5ftxyhFZIkRqqOTwLZw0';
   
   static Future<List<Place>> getSearchedPlaces(String searchPlace) async{
     var url = Uri.parse('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$searchPlace&types=geocode&key=$_apiKey');

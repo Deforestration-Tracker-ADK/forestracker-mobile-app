@@ -9,6 +9,8 @@ import 'package:forest_tracker/presentation_layer/utilities/components.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 
+import 'add_photo_button.dart';
+
 class ReportCreationPage extends StatefulWidget {
   static const String id = 'report_page';
   @override
@@ -124,15 +126,22 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
                 SizedBox(
                   height: 15,
                 ),
-                customButton(color: Colors.grey,text: '+ Add Photos',onPressed: (){}),
+                AddPhotosButton(
+                  color: Colors.grey,
+                  text: '+ Add Photos',
+                ),
                 SizedBox(
                   height: 15,
                 ),
-                customButton(color: Colors.lightGreen,text: 'Save Draft',onPressed: (){}),
+                customButton(
+                    color: Colors.lightGreen,
+                    text: 'Save Draft',
+                    onPressed: () {}),
                 SizedBox(
                   height: 8,
                 ),
-                customButton(color: Colors.red,text: 'Send Report',onPressed: (){})
+                customButton(
+                    color: Colors.red, text: 'Send Report', onPressed: () {})
               ],
             ),
           ),
@@ -141,6 +150,32 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
     );
   }
 
+  // Future<dynamic> popUpSelection(BuildContext context) {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (_) => AlertDialog(
+  //             backgroundColor: Colors.greenAccent,
+  //             title: Center(child: Text('Select option')),
+  //             content: Row(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 IconButton(
+  //                     onPressed: () {},
+  //                     icon: Icon(
+  //                       Icons.camera_alt,
+  //                       size: 50,
+  //                     )),
+  //                 Spacer(),
+  //                 IconButton(
+  //                     onPressed: () {}, icon: Icon(Icons.photo, size: 50))
+  //               ],
+  //             ),
+  //             elevation: 3,
+  //             scrollable: true,
+  //             actionsAlignment: MainAxisAlignment.center,
+  //           ));
+  // }
 
   ListTile radioButton(String text, int value) {
     return ListTile(
@@ -154,7 +189,6 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
         onChanged: (value) {
           setState(() {
             _groupValue = value;
-            print(_groupValue);
           });
         },
       ),
