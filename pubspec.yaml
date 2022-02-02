@@ -42,6 +42,8 @@ dependencies:
   google_maps_flutter: ^2.0.10
   flutter_typeahead: ^3.2.1
   image_picker: ^0.8.4+4
+  expandable: ^5.0.1
+  html: ^0.15.0
 
 
 dev_dependencies:

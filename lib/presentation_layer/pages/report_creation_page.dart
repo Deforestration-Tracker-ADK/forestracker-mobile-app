@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forest_tracker/logic_layer/blocs/image_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/multi_choices_cubit.dart';
 import 'package:forest_tracker/logic_layer/cubits/select_location_cubit.dart';
+import 'package:forest_tracker/logic_layer/states/add_image_state.dart';
 import 'package:forest_tracker/logic_layer/states/multi_choices_state.dart';
 import 'package:forest_tracker/logic_layer/states/selected_location_state.dart';
 import 'package:forest_tracker/presentation_layer/utilities/components.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
-
 import 'add_photo_button.dart';
 
 class ReportCreationPage extends StatefulWidget {
@@ -126,9 +127,17 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
                 SizedBox(
                   height: 15,
                 ),
-                AddPhotosButton(
-                  color: Colors.grey,
-                  text: '+ Add Photos',
+                BlocBuilder<ImagesBloc,ImagesState>(
+                  buildWhen: (prevState,state){
+                    if(state is AddImages ||state is SelectImages ||state is SelectMaxImages|| state is DeleteImage ){return true;}
+                    return false;
+                  },
+                  builder: (context,state) {
+                    return AddPhotosButton(
+                      color: Colors.grey,
+                      text: (state.images !=null && state.images.length!=0)?'+ Add Photos (${state.images.length})':'+ Add Photos',
+                    );
+                  }
                 ),
                 SizedBox(
                   height: 15,

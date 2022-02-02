@@ -164,12 +164,18 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
           child: Center(
             child: Icon(Icons.keyboard_arrow_right_sharp),
           ),
-          onPressed: () {
-            _tapSearch(false);
-            context.read<SelectLocationCubit>().getLocationName(_lat, _lon);
-            Navigator.pushNamed(context, ReportCreationPage.id);
-          }),
+          onPressed: () => navigateToReportPage(context)
+          ),
     );
+  }
+
+  void navigateToReportPage(BuildContext context) {
+    //disable navigating to report page until the pointer gets a location
+    if(_lat!=null && _lon!=null){
+      _tapSearch(false);
+      context.read<SelectLocationCubit>().getLocationName(_lat, _lon);
+      Navigator.pushNamed(context, ReportCreationPage.id);
+    }
   }
 
   CameraPosition setInitialCameraPosition(MapStates state) {
@@ -185,7 +191,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
       icon: BitmapDescriptor.defaultMarker,
       position: LatLng(state.location.latitude, state.location.longitude),
       draggable: true,
-      onDragEnd: (value) => {_setLatLngValue(value.latitude, value.longitude)},
+      onDragEnd: (value) => _setLatLngValue(value.latitude, value.longitude),
     );
   }
 

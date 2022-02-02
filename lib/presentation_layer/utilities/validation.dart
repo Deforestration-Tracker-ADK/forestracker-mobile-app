@@ -1,3 +1,5 @@
+import 'package:html/parser.dart';
+
 String validatePassword(value) {
   value = value.toString();
   if (value.isEmpty) {
@@ -16,5 +18,12 @@ String validateUsername(value) {
     return "Username should be at least 6 characters";
   }
   return null;
+}
+
+String parseHtmlString(String htmlString) {
+  final document = parse(htmlString);
+  final String parsedString = parse(document.body.text).documentElement.text;
+
+  return parsedString;
 }
 

@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
             return ListView.builder(
               itemCount: state.articles.length,
               itemBuilder: (context, index) =>
-                  customCard(customNewsTile(state.articles[index],context,()=>onPressed(state.articles[index]))),
+                  customCard(customNewsTile(state.articles[index],context)),
             );
           }
           else{

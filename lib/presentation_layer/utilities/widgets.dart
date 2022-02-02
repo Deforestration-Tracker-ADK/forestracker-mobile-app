@@ -1,45 +1,53 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_tracker/data_layer/models/article.dart';
 import 'package:forest_tracker/data_layer/models/project.dart';
+import 'package:forest_tracker/presentation_layer/utilities/validation.dart';
 
 import 'components.dart';
 
+Function function = () {};
 
-String buttonText = 'View more..';
-Function function = (){};
-
-Widget customNewsTile(Article article,BuildContext context,Function onPressed) => Column(
-  mainAxisAlignment: MainAxisAlignment.start,
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Container(
-      height: MediaQuery.of(context).size.height/3,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: NetworkImage(article.urlToImage), fit: BoxFit.cover),
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12.0),
-            topRight: Radius.circular(12)),
-      ),
-    ),
-    SizedBox(
-      height: 8.0,
-    ),
-    Padding(
-      padding: EdgeInsets.only(left: 10.0, right: 5.0),
-      child: Text(
-        article.title,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
+Widget customNewsTile(Article article, BuildContext context) => Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height / 3,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: NetworkImage(article.urlToImage), fit: BoxFit.cover),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.0), topRight: Radius.circular(12)),
+          ),
         ),
-      ),
-    ),
-    buttonBar(buttonText,onPressed),
-  ],
-);
+        SizedBox(
+          height: 8.0,
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 10.0, right: 5.0, bottom: 5.0),
+          child: ExpandablePanel(
+            header: Text(
+              article.title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+              ),
+            ),
+            expanded: Text(parseHtmlString(article.description),
+                softWrap: true,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: 14.0,
+                )),
+            theme: ExpandableThemeData(useInkWell: true), collapsed: null,
+          ),
+        )
+      ],
+    );
 
+// ),
 
 Widget customCard(Widget child, {double border = 16}) => Card(
       elevation: 5,
@@ -67,12 +75,14 @@ Widget customButton(
         double minWidth = 200.0,
         double height = 42.0,
         double borderRadius = 30.0,
+        double padding = 16.0,
+          double elevation = 5.0,
         Function onPressed,
         TextStyle style}) =>
     Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: EdgeInsets.symmetric(vertical: padding),
       child: Material(
-        elevation: 5.0,
+        elevation: elevation,
         color: color,
         borderRadius: BorderRadius.circular(borderRadius),
         child: MaterialButton(
@@ -98,10 +108,13 @@ Container badgeIcon({double width = 75, double height = 75}) => Container(
       ),
     );
 
-Widget customTile(Project project, Function onPressed,  {Function onTap , bool noIcon = false}) {
+Widget customTile(Project project, Function onPressed,
+    {Function onTap, bool noIcon = false}) {
   bool isFav = project.isFav;
   Widget favIcon = noIcon
-      ? SizedBox(height: 20,)
+      ? SizedBox(
+          height: 20,
+        )
       : IconButton(
           icon: isFav
               ? Icon(
@@ -203,4 +216,3 @@ ListTile descriptionTile(String term1, String term2) {
             fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
       ));
 }
-

@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/data_layer/services/project_services.dart';
+import 'package:forest_tracker/logic_layer/blocs/image_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/login_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/map_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/news_bloc.dart';
@@ -18,6 +19,7 @@ import 'package:forest_tracker/presentation_layer/screens/login_screen.dart';
 import 'package:forest_tracker/presentation_layer/screens/main_screen.dart';
 import 'package:forest_tracker/presentation_layer/pages/project_page.dart';
 import 'package:forest_tracker/presentation_layer/screens/welcome_screen.dart';
+import 'data_layer/models/images.dart';
 import 'data_layer/models/report.dart';
 import 'data_layer/services/location_service.dart';
 import 'data_layer/services/news_services.dart';
@@ -34,6 +36,7 @@ class ForestTracker extends StatelessWidget {
   final NewsAPI newsAPI = NewsAPI();
   final geoLocator = GeoLocator();
   final searchPlace = SearchPlaces();
+  final images = Images(images: [] );
 
   ForestTracker({@required this.connectivity});
 
@@ -51,7 +54,8 @@ class ForestTracker extends StatelessWidget {
         BlocProvider<ProjectsBloc>(create: (context) => ProjectsBloc(projectAPI:projectAPI,projectBloc: context.read<ProjectBloc>())),
         BlocProvider<MapBloc>(create: (context)=>MapBloc(geoLocator:geoLocator ,searchPlaces: searchPlace)),
         BlocProvider<SelectLocationCubit>(create: (context) => SelectLocationCubit(searchPlaces: searchPlace)),
-        BlocProvider<MultiChoicesCubit>(create: (context)=>MultiChoicesCubit(multipleChoices: MultipleChoices()))
+        BlocProvider<MultiChoicesCubit>(create: (context)=>MultiChoicesCubit(multipleChoices: MultipleChoices())),
+        BlocProvider<ImagesBloc>(create: (context)=>ImagesBloc(images: images),)
       ],
       child: MaterialApp(
         initialRoute: WelcomeScreen.id,

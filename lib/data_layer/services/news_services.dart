@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 
 class NewsAPI{
-  static final String _apiKey = '0ce36a1f469148ad8e2472506699a0ee';
+  static final String _apiKey = '';
   final uri = Uri.parse('https://newsapi.org/v2/everything?domains=wsj.com&apiKey=$_apiKey');
 
   Future getArticles() async {
