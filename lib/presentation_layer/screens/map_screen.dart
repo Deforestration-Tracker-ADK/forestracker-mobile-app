@@ -51,6 +51,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: AppBar().preferredSize,

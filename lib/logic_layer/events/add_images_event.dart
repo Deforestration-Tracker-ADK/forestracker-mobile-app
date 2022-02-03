@@ -26,3 +26,9 @@ class DeleteImageEvent extends ImagesEvent{
   List<Object> get props => [imageId];
 
 }
+
+class RemoveImagesEvent extends ImagesEvent{
+  @override
+  List<Object> get props => [];
+
+}

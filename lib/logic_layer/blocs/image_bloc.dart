@@ -30,6 +30,11 @@ class ImagesBloc extends Bloc<ImagesEvent,ImagesState>{
       images.deleteImage(event.imageId);
       yield DeleteImage(images.getImages());
     }
+
+    if(event is RemoveImagesEvent){
+      images.clearList();
+      yield SelectImages(images.getImages());
+    }
   }
 
 }

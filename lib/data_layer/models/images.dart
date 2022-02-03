@@ -37,4 +37,8 @@ class Images extends Equatable{
     images.removeRange(index, images.length);
   }
 
+  void clearList(){
+    images.clear();
+  }
+
 }
