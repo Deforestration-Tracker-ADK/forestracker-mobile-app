@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forest_tracker/logic_layer/blocs/image_bloc.dart';
-import 'package:forest_tracker/logic_layer/events/add_images_event.dart';
-import 'package:forest_tracker/logic_layer/states/add_image_state.dart';
+import 'package:forest_tracker/logic_layer/blocs/report_bloc.dart';
+import 'package:forest_tracker/logic_layer/events/report_event.dart';
+import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -33,7 +33,7 @@ class AddPhotosButton extends StatelessWidget {
       var imageFile = await _picker.pickImage(source: imageSources);
       images = [imageFile];
     }
-    context.read<ImagesBloc>().add(SelectImagesEvent(images));
+    context.read<ReportBloc>().add(SelectImagesEvent(images));
 
   }
 
@@ -79,7 +79,7 @@ class AddPhotosButton extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
           ),
         ),
-        content: BlocBuilder<ImagesBloc,ImagesState>(
+        content: BlocBuilder<ReportBloc,ReportState>(
           buildWhen: (preState,state){
             if(state is DeleteImage){
               return true;
@@ -87,7 +87,7 @@ class AddPhotosButton extends StatelessWidget {
             return false;
           },
           builder:(context,state){
-          var len = context.read<ImagesBloc>().images.getImages().length;
+          var len = context.read<ReportBloc>().images.getImages().length;
           if (len==0){
             return Text("No Images Selected!!");
           }
@@ -109,14 +109,14 @@ class AddPhotosButton extends StatelessWidget {
                                 fit: StackFit.expand,
                                 children: [
                                   Image.file(
-                                    File(context.read<ImagesBloc>().images.getImages()[index].path),
+                                    File(context.read<ReportBloc>().images.getImages()[index].path),
                                     fit: BoxFit.cover,
                                   ),
                                   Positioned(top: 5, right: 5,
                                       child: Container(color: Colors.white70,
                                           child: IconButton(icon: Icon(Icons.delete), color: Colors.red[900],
                                             onPressed: (){
-                                              context.read<ImagesBloc>().add(DeleteImageEvent(imageId: index));
+                                              context.read<ReportBloc>().add(DeleteImageEvent(imageId: index));
                                             },
                                           )
                                       )
@@ -140,7 +140,7 @@ class AddPhotosButton extends StatelessWidget {
                  color: Colors.lightGreen,
                  text: '+ Add',
                  onPressed: () {
-                   context.read<ImagesBloc>().add(AddImagesEvent());
+                   context.read<ReportBloc>().add(AddImagesEvent());
                    Navigator.of(context).pop();
                    return popUpSelection(context);
                  },
@@ -166,7 +166,7 @@ class AddPhotosButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ImagesBloc, ImagesState>(
+    return BlocConsumer<ReportBloc, ReportState>(
       listenWhen: (prevState, state){
         if(state is SelectMaxImages){
           return true;
@@ -198,12 +198,10 @@ class AddPhotosButton extends StatelessWidget {
           height: height,
           onPressed: () {
             if (state.images != null && state.images.length != 0) {
-              context
-                  .read<ImagesBloc>()
-                  .add(SelectImagesEvent(state.images));
+              context.read<ReportBloc>().add(SelectImagesEvent(state.images));
               return gridView(context);
             } else {
-              context.read<ImagesBloc>().add(AddImagesEvent());
+              context.read<ReportBloc>().add(AddImagesEvent());
               return popUpSelection(context);
             }
           },

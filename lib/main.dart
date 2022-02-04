@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/data_layer/services/project_services.dart';
-import 'package:forest_tracker/logic_layer/blocs/image_bloc.dart';
+import 'package:forest_tracker/logic_layer/blocs/report_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/login_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/map_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/news_bloc.dart';
@@ -23,7 +23,6 @@ import 'data_layer/models/images.dart';
 import 'data_layer/models/report.dart';
 import 'data_layer/services/location_service.dart';
 import 'data_layer/services/news_services.dart';
-import 'logic_layer/cubits/multi_choices_cubit.dart';
 import 'logic_layer/cubits/select_location_cubit.dart';
 import 'logic_layer/singleBlocObsever.dart';
 
@@ -34,9 +33,10 @@ class ForestTracker extends StatelessWidget {
   final Connectivity connectivity;
   final ProjectAPI projectAPI = ProjectAPI.getInstance();
   final NewsAPI newsAPI = NewsAPI();
-  final geoLocator = GeoLocator();
-  final searchPlace = SearchPlaces();
-  final images = Images(images: [] );
+  final GeoLocator geoLocator = GeoLocator();
+  final SearchPlaces searchPlace = SearchPlaces();
+  final MultipleChoices multipleChoices = MultipleChoices();
+  final Images images = Images(images: List.empty(growable: true) );
 
   ForestTracker({@required this.connectivity});
 
@@ -54,8 +54,7 @@ class ForestTracker extends StatelessWidget {
         BlocProvider<ProjectsBloc>(create: (context) => ProjectsBloc(projectAPI:projectAPI,projectBloc: context.read<ProjectBloc>())),
         BlocProvider<MapBloc>(create: (context)=>MapBloc(geoLocator:geoLocator ,searchPlaces: searchPlace)),
         BlocProvider<SelectLocationCubit>(create: (context) => SelectLocationCubit(searchPlaces: searchPlace)),
-        BlocProvider<MultiChoicesCubit>(create: (context)=>MultiChoicesCubit(multipleChoices: MultipleChoices())),
-        BlocProvider<ImagesBloc>(create: (context)=>ImagesBloc(images: images),)
+        BlocProvider<ReportBloc>(create: (context)=>ReportBloc(images: images,multipleChoices: multipleChoices),)
       ],
       child: MaterialApp(
         initialRoute: WelcomeScreen.id,

@@ -1,32 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forest_tracker/logic_layer/blocs/image_bloc.dart';
-import 'package:forest_tracker/logic_layer/cubits/multi_choices_cubit.dart';
+import 'package:forest_tracker/logic_layer/blocs/report_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/select_location_cubit.dart';
-import 'package:forest_tracker/logic_layer/events/add_images_event.dart';
-import 'package:forest_tracker/logic_layer/states/add_image_state.dart';
-import 'package:forest_tracker/logic_layer/states/multi_choices_state.dart';
+import 'package:forest_tracker/logic_layer/events/report_event.dart';
+import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/logic_layer/states/selected_location_state.dart';
 import 'package:forest_tracker/presentation_layer/utilities/components.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 import 'add_photo_button.dart';
 
-class ReportCreationPage extends StatefulWidget {
+class ReportCreationPage extends StatelessWidget {
   static const String id = 'report_page';
-  @override
-  _ReportCreationPageState createState() => _ReportCreationPageState();
-}
 
-class _ReportCreationPageState extends State<ReportCreationPage> {
-  int _groupValue;
+  static final reportNameController = TextEditingController();
+  static final descriptionController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: ()=>willPopUpSelection(context),
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.greenAccent,
         appBar: AppBar(
           title: Text('Create Report'),
@@ -45,6 +42,8 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0, right: 10),
                     child: TextField(
+                      keyboardType: TextInputType.text,
+                      controller: reportNameController,
                       maxLines: double.maxFinite.toInt(),
                       minLines: 1,
                       textAlignVertical: TextAlignVertical.top,
@@ -83,26 +82,26 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
                   SizedBox(
                     height: 25,
                   ),
-                  descriptionTile('3. ',
-                      'Do you suspect any deforestation activities in above area ?'),
+                  descriptionTile('3. ', 'Do you suspect any deforestation activities in above area ?'),
                   radioButton('Yes', 0),
                   radioButton('No', 1),
                   SizedBox(
                     height: 15,
                   ),
                   descriptionTile('4. ', 'Any suspicious reasons ?'),
-                  BlocBuilder<MultiChoicesCubit, MultiChoicesState>(
+                  BlocBuilder<ReportBloc, ReportState>(
                       buildWhen: (prevState, state) {
-                    if (state is TappedChoice) {
+                    if (state is MultipleChoice) {
                       return true;
                     }
                     return false;
                   }, builder: (context, state) {
+                    List<bool> choiceState = context.watch<ReportBloc>().multipleChoices.multiChoices;
                     return Column(
                         children: reasons
                             .map((reason) => multipleChoices(
                                 reason,
-                                state.choices[reasons.indexOf(reason)],
+                                choiceState[reasons.indexOf(reason)],
                                 reasons.indexOf(reason),
                                 context))
                             .toList());
@@ -114,6 +113,8 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0, right: 10),
                     child: TextField(
+                      controller: descriptionController,
+                      keyboardType: TextInputType.text,
                       maxLines: double.maxFinite.toInt(),
                       minLines: 1,
                       textAlignVertical: TextAlignVertical.top,
@@ -130,7 +131,7 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
                   SizedBox(
                     height: 15,
                   ),
-                  BlocBuilder<ImagesBloc,ImagesState>(
+                  BlocBuilder<ReportBloc,ReportState>(
                     buildWhen: (prevState,state){
                       if(state is AddImages ||state is SelectImages ||state is SelectMaxImages|| state is DeleteImage ){return true;}
                       return false;
@@ -185,7 +186,7 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
                           text: 'OK',
                           onPressed: () {
                             willLeave = true;
-                            context.read<ImagesBloc>().add(RemoveImagesEvent());
+                            context.read<ReportBloc>().add(RemoveImagesEvent());
                             Navigator.of(context).pop();
                           },
                         ),
@@ -218,14 +219,22 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
       horizontalTitleGap: 0,
       visualDensity: VisualDensity(vertical: -4, horizontal: -2),
       contentPadding: EdgeInsets.only(left: 5, top: 5),
-      leading: Radio<int>(
-        groupValue: _groupValue,
-        value: value,
-        onChanged: (value) {
-          setState(() {
-            _groupValue = value;
-          });
+      leading: BlocBuilder<ReportBloc,ReportState>(
+        buildWhen: (prevState,state){
+          if(state is TapedLoading || state is TappedChoice){
+            return true;
+          }
+          return false;
         },
+        builder: (context,state) {
+          return Radio<int>(
+            groupValue: state.value,
+            value: value,
+            onChanged: (value) {
+                context.read<ReportBloc>().add(RadioButtonEvent(value: value));
+            },
+          );
+        }
       ),
     );
   }
@@ -239,7 +248,7 @@ class _ReportCreationPageState extends State<ReportCreationPage> {
       leading: Checkbox(
           value: value,
           onChanged: (value) {
-            context.read<MultiChoicesCubit>().onTap(index, value);
+            context.read<ReportBloc>().add(MultiChoiceEvent(index :index, tapped: value));
           }),
       title: Text(option),
     );
