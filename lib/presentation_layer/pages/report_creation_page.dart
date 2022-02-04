@@ -22,140 +22,146 @@ class ReportCreationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: ()=>willPopUpSelection(context),
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.greenAccent,
-        appBar: AppBar(
-          title: Text('Create Report'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            color: Colors.greenAccent.shade100,
-            elevation: 5,
-            shadowColor: Colors.green,
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: ListView(
-                children: [
-                  descriptionTile('1. ', 'Report Name :'),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 10),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      controller: reportNameController,
-                      maxLines: double.maxFinite.toInt(),
-                      minLines: 1,
-                      textAlignVertical: TextAlignVertical.top,
-                      textCapitalization: TextCapitalization.words,
-                      decoration: InputDecoration(
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black)),
-                          hintText: 'Enter Report Name...',
-                          hintStyle: TextFontDecoration.copyWith(
-                              fontStyle: FontStyle.italic, color: Colors.grey)),
-                      style: TextFontDecoration,
+      //to hide the keyboard when touch the screen
+      child: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.greenAccent,
+          appBar: AppBar(
+            title: Text('Create Report'),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              color: Colors.greenAccent.shade100,
+              elevation: 5,
+              shadowColor: Colors.green,
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: ListView(
+                  children: [
+                    descriptionTile('1. ', 'Report Name :'),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0, right: 10),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        controller: reportNameController,
+                        maxLines: double.maxFinite.toInt(),
+                        minLines: 1,
+                        textAlignVertical: TextAlignVertical.top,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            hintText: 'Enter Report Name...',
+                            hintStyle: TextFontDecoration.copyWith(
+                                fontStyle: FontStyle.italic, color: Colors.grey)),
+                        style: TextFontDecoration,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  descriptionTile('2. ', 'Location : '),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 10),
-                    child: Builder(builder: (context) {
-                      final locationCubit =
-                          context.watch<SelectLocationCubit>().state;
-                      if (locationCubit is LoadingState) {
-                        return Center(
-                          child: LinearProgressIndicator(),
-                        );
-                      } else {
-                        return Text(
-                          locationCubit.place,
-                          style: TextFontDecoration,
-                          maxLines: double.maxFinite.toInt(),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    descriptionTile('2. ', 'Location : '),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0, right: 10),
+                      child: Builder(builder: (context) {
+                        final locationCubit =
+                            context.watch<SelectLocationCubit>().state;
+                        if (locationCubit is LoadingState) {
+                          return Center(
+                            child: LinearProgressIndicator(),
+                          );
+                        } else {
+                          return Text(
+                            locationCubit.place,
+                            style: TextFontDecoration,
+                            maxLines: double.maxFinite.toInt(),
+                          );
+                        }
+                      }),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    descriptionTile('3. ', 'Do you suspect any deforestation activities in above area ?'),
+                    radioButton('Yes', 0),
+                    radioButton('No', 1),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    descriptionTile('4. ', 'Any suspicious reasons ?'),
+                    BlocBuilder<ReportBloc, ReportState>(
+                        buildWhen: (prevState, state) {
+                      if (state is MultipleChoice) {
+                        return true;
+                      }
+                      return false;
+                    }, builder: (context, state) {
+                      List<bool> choiceState = context.watch<ReportBloc>().multipleChoices.multiChoices;
+                      return Column(
+                          children: reasons
+                              .map((reason) => multipleChoices(
+                                  reason,
+                                  choiceState[reasons.indexOf(reason)],
+                                  reasons.indexOf(reason),
+                                  context))
+                              .toList());
+                    }),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    descriptionTile('5. ', 'Description (Optional) : '),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0, right: 10),
+                      child: TextField(
+                        controller: descriptionController,
+                        keyboardType: TextInputType.text,
+                        maxLines: double.maxFinite.toInt(),
+                        minLines: 1,
+                        textAlignVertical: TextAlignVertical.top,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            hintText: 'Type here...',
+                            hintStyle: TextFontDecoration.copyWith(
+                                fontStyle: FontStyle.italic, color: Colors.grey)),
+                        style: TextFontDecoration,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    BlocBuilder<ReportBloc,ReportState>(
+                      buildWhen: (prevState,state){
+                        if(state is AddImages ||state is SelectImages ||state is SelectMaxImages|| state is DeleteImage ){return true;}
+                        return false;
+                      },
+                      builder: (context,state) {
+                        return AddPhotosButton(
+                          color: Colors.grey,
+                          text: (state.images !=null && state.images.length!=0)?'+ Add Photos (${state.images.length})':'+ Add Photos',
                         );
                       }
-                    }),
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  descriptionTile('3. ', 'Do you suspect any deforestation activities in above area ?'),
-                  radioButton('Yes', 0),
-                  radioButton('No', 1),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  descriptionTile('4. ', 'Any suspicious reasons ?'),
-                  BlocBuilder<ReportBloc, ReportState>(
-                      buildWhen: (prevState, state) {
-                    if (state is MultipleChoice) {
-                      return true;
-                    }
-                    return false;
-                  }, builder: (context, state) {
-                    List<bool> choiceState = context.watch<ReportBloc>().multipleChoices.multiChoices;
-                    return Column(
-                        children: reasons
-                            .map((reason) => multipleChoices(
-                                reason,
-                                choiceState[reasons.indexOf(reason)],
-                                reasons.indexOf(reason),
-                                context))
-                            .toList());
-                  }),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  descriptionTile('5. ', 'Description (Optional) : '),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 10),
-                    child: TextField(
-                      controller: descriptionController,
-                      keyboardType: TextInputType.text,
-                      maxLines: double.maxFinite.toInt(),
-                      minLines: 1,
-                      textAlignVertical: TextAlignVertical.top,
-                      textCapitalization: TextCapitalization.words,
-                      decoration: InputDecoration(
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black)),
-                          hintText: 'Type here...',
-                          hintStyle: TextFontDecoration.copyWith(
-                              fontStyle: FontStyle.italic, color: Colors.grey)),
-                      style: TextFontDecoration,
                     ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  BlocBuilder<ReportBloc,ReportState>(
-                    buildWhen: (prevState,state){
-                      if(state is AddImages ||state is SelectImages ||state is SelectMaxImages|| state is DeleteImage ){return true;}
-                      return false;
-                    },
-                    builder: (context,state) {
-                      return AddPhotosButton(
-                        color: Colors.grey,
-                        text: (state.images !=null && state.images.length!=0)?'+ Add Photos (${state.images.length})':'+ Add Photos',
-                      );
-                    }
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  customButton(
-                      color: Colors.lightGreen,
-                      text: 'Save Draft',
-                      onPressed: () {}),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  customButton(
-                      color: Colors.red, text: 'Send Report', onPressed: () {})
-                ],
+                    SizedBox(
+                      height: 15,
+                    ),
+                    customButton(
+                        color: Colors.lightGreen,
+                        text: 'Save Draft',
+                        onPressed: () {}),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    customButton(
+                        color: Colors.red, text: 'Send Report', onPressed: () {})
+                  ],
+                ),
               ),
             ),
           ),
@@ -186,7 +192,7 @@ class ReportCreationPage extends StatelessWidget {
                           text: 'OK',
                           onPressed: () {
                             willLeave = true;
-                            context.read<ReportBloc>().add(RemoveImagesEvent());
+                            context.read<ReportBloc>().add(ClearDataEvent());
                             Navigator.of(context).pop();
                           },
                         ),

@@ -37,6 +37,10 @@ class MultipleChoices extends Equatable{
     this._choices[index] = value;
   }
 
+  void clearValues() {
+    this._choices = List.filled(reasons.length, false);
+  }
+
   @override
   List<bool> get props => _choices;
 

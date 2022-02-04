@@ -72,3 +72,8 @@ class RemoveImagesEvent extends ReportEvent{
   List<Object> get props => [];
 
 }
+
+class ClearDataEvent extends ReportEvent{
+  @override
+  List<Object> get props => [];
+}

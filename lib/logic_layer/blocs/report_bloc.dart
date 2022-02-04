@@ -3,11 +3,12 @@ import 'package:forest_tracker/data_layer/models/images.dart';
 import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
+import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
 
 class ReportBloc extends Bloc<ReportEvent,ReportState>{
-  String reportName;
+  String reportName = ReportCreationPage.reportNameController.value.text;
   String location;
-  String description;
+  String description = ReportCreationPage.descriptionController.value.text;
   final Images images;
   final MultipleChoices multipleChoices;
   ReportBloc({this.multipleChoices, this.images}) : super(MultipleChoice(choices: multipleChoices.multiChoices));
@@ -33,6 +34,10 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
 
     if( event is RemoveImagesEvent){
       yield* _removeImages(event);
+    }
+
+    if(event is ClearDataEvent){
+      yield* _clearData(event);
     }
   }
 
@@ -83,6 +88,20 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
     try {
       images.clearList();
       yield SelectImages(images.getImages());
+    } catch (e) {
+      yield Error(error: e.toString());
+    }
+  }
+
+  Stream<ReportState> _clearData(ClearDataEvent event) async* {
+    try {
+      images.clearList();
+      multipleChoices.clearValues();
+      ReportCreationPage.descriptionController.clear();
+      ReportCreationPage.reportNameController.clear();
+      yield SelectImages(images.getImages());
+      yield MultipleChoice(choices: multipleChoices.multiChoices);
+
     } catch (e) {
       yield Error(error: e.toString());
     }
