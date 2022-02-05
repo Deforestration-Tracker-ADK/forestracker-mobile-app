@@ -33,7 +33,7 @@ class AddPhotosButton extends StatelessWidget {
       var imageFile = await _picker.pickImage(source: imageSources);
       images = [imageFile];
     }
-    context.read<ReportBloc>().add(SelectImagesEvent(images));
+    context.read<ReportBloc>().add(SelectImagesEvent(images.map((image) => image.path).toList()));
 
   }
 
@@ -109,7 +109,7 @@ class AddPhotosButton extends StatelessWidget {
                                 fit: StackFit.expand,
                                 children: [
                                   Image.file(
-                                    File(context.read<ReportBloc>().images.getImages()[index].path),
+                                    File(context.read<ReportBloc>().images.getImages()[index]),
                                     fit: BoxFit.cover,
                                   ),
                                   Positioned(top: 5, right: 5,

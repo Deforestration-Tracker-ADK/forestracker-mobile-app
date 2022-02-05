@@ -11,6 +11,7 @@ class ProjectAPI{
   var url ;
   var response;
 
+  //private constructor
   ProjectAPI._();
 
   static getInstance(){

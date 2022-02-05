@@ -18,9 +18,11 @@ import 'package:forest_tracker/presentation_layer/screens/fav_projects_screen.da
 import 'package:forest_tracker/presentation_layer/screens/login_screen.dart';
 import 'package:forest_tracker/presentation_layer/screens/main_screen.dart';
 import 'package:forest_tracker/presentation_layer/pages/project_page.dart';
+import 'package:forest_tracker/presentation_layer/screens/report_screen.dart';
 import 'package:forest_tracker/presentation_layer/screens/welcome_screen.dart';
 import 'data_layer/models/images.dart';
 import 'data_layer/models/report.dart';
+import 'data_layer/services/auth_service.dart';
 import 'data_layer/services/location_service.dart';
 import 'data_layer/services/news_services.dart';
 import 'logic_layer/cubits/select_location_cubit.dart';
@@ -29,23 +31,35 @@ import 'logic_layer/singleBlocObsever.dart';
 
 void main() => runApp(ForestTracker(connectivity: Connectivity()));
 
-class ForestTracker extends StatelessWidget {
+class ForestTracker extends StatefulWidget {
   final Connectivity connectivity;
+
+  ForestTracker({@required this.connectivity});
+
+  @override
+  State<ForestTracker> createState() => _ForestTrackerState();
+}
+
+class _ForestTrackerState extends State<ForestTracker> {
   final ProjectAPI projectAPI = ProjectAPI.getInstance();
   final NewsAPI newsAPI = NewsAPI();
   final GeoLocator geoLocator = GeoLocator();
   final SearchPlaces searchPlace = SearchPlaces();
   final MultipleChoices multipleChoices = MultipleChoices();
-  final Images images = Images(images: List.empty(growable: true) );
+  final Images images = Images(images: List.empty(growable: true));
 
-  ForestTracker({@required this.connectivity});
-
+  @override
+  void initState() {
+    //create a singleton of shared preferences
+    Authentication.init();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     Bloc.observer = SimpleBlocObserver();
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ConnectionCubit>(create: (context) => ConnectionCubit(connection: connectivity)),
+        BlocProvider<ConnectionCubit>(create: (context) => ConnectionCubit(connection: widget.connectivity)),
         BlocProvider<LoginBloc>(create: (context) => LoginBloc()),
         BlocProvider<NavigationCubit>(create: (context) => NavigationCubit()),
         BlocProvider<LocationAppBarCubit>(create: (context) => LocationAppBarCubit()),
@@ -64,6 +78,7 @@ class ForestTracker extends StatelessWidget {
           MainPage.id: (context) => MainPage(),
           ViewArticle.id : (context) => ViewArticle(),
           ProjectPage.id : (context) => ProjectPage(),
+          ReportPage.id :(context)=> ReportPage(),
           FavProjectScreen.id : (context) => FavProjectScreen(),
           AppliedProjectScreen.id : (context) => AppliedProjectScreen(),
           ReportCreationPage.id : (context) => ReportCreationPage(),

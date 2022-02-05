@@ -17,11 +17,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
 
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-      lowerBound: 0.0,
-      upperBound: 1.0,
+
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 3), lowerBound: 0.0, upperBound: 1.0,
     );
 
     _animation = Tween(

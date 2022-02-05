@@ -19,23 +19,11 @@ class _ProjectPageState extends State<ProjectPage> {
   bool isLoading = false;
   bool isApplied = false;
 
-  Future<dynamic> dialogMsg(BuildContext context) {
-    return showDialog(context: context,
-        barrierDismissible: false,
-        builder: (_)=>AlertDialog(
-          title: Text('Please wait...'),
-          content: Center(child: CircularProgressIndicator()),
-          elevation: 3,
-          scrollable: true,
-          actionsAlignment: MainAxisAlignment.center,
-        ));
-  }
+
 
   Widget customActionButton(BuildContext context, Project project) {
     return customButton(
-        onPressed: isLoading
-            ? null
-            : () async {
+        onPressed: isLoading ? null : () async {
           final bloc = context.read<ProjectBloc>();
           if(isApplied){
             bloc.add(CancelProject(
@@ -111,7 +99,7 @@ class _ProjectPageState extends State<ProjectPage> {
               listener: (context, state) {
                 if (state is LoadingState) {
                   isLoading = true;
-                  dialogMsg(context);
+                  dialogMsg(context,'Please wait...');
                 }
                 else if (state is AppliedState) {
                   isLoading = false;

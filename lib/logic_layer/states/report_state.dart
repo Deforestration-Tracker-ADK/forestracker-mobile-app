@@ -1,12 +1,28 @@
 
 import 'package:equatable/equatable.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:forest_tracker/data_layer/models/report.dart';
 
 abstract class ReportState extends Equatable{
-  final int value;
-  final List<XFile> images;
+  final int value = 0;
+  final List<String> images;
   final List<bool> choices;
-  ReportState({this.choices,this.images,this.value});
+  ReportState({this.choices,this.images});
+}
+
+class Loading extends ReportState{
+  @override
+  List<Object> get props => [];
+
+}
+
+class InvalidReportName extends ReportState{
+  final String warning;
+
+  InvalidReportName({this.warning});
+
+  @override
+  List<String> get props => [warning];
+
 }
 
 class MultiChoiceLoading extends ReportState{
@@ -41,29 +57,43 @@ class ImageLoading extends ReportState{
 }
 
 class AddImages extends ReportState{
-  AddImages(List<XFile> images) : super(images: images);
+  AddImages(List<String> images) : super(images: images);
   @override
   List<Object> get props => [images];
 
 }
 
 class SelectImages extends ReportState{
-  SelectImages(List<XFile> images) : super(images: images);
+  SelectImages(List<String> images) : super(images: images);
   @override
   List<Object> get props => [images];
 }
 
 class SelectMaxImages extends ReportState{
-  SelectMaxImages(List<XFile> images) : super(images: images);
+  SelectMaxImages(List<String> images) : super(images: images);
   @override
   List<Object> get props => [images];
 }
 
 class DeleteImage extends ReportState{
-  DeleteImage(List<XFile> images) : super(images: images);
+  DeleteImage(List<String> images) : super(images: images);
   @override
   List<Object> get props => [images];
 
+}
+
+class DraftSaving extends ReportState{
+  @override
+  List<Object> get props => [];
+}
+
+class DraftSaved extends ReportState{
+  final Report draftReport;
+
+  DraftSaved({this.draftReport});
+
+  @override
+  List<Object> get props => [draftReport];
 }
 
 class Error extends ReportState{
@@ -75,3 +105,4 @@ class Error extends ReportState{
   List<Object> get props => [error];
 
 }
+

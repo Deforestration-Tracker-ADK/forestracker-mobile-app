@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Images extends Equatable{
-  final List<XFile> images;
+  final List<String> images;
 
   Images({this.images});
 
@@ -11,20 +11,24 @@ class Images extends Equatable{
 
   factory Images.fromJson(Map<String,dynamic> jsonData){
     return Images(
-        images: jsonData['images'] as List<XFile>);
+        images: jsonData['images'] as List<String>);
   }
 
+  Map<String,dynamic> toJson() => {
+    'images' : this.images
+  };
+
   void addImage(XFile imageFile){
-    images.add(imageFile);
+    images.add(imageFile.path);
     print("successfully added");
   }
 
-  void addImages(List<XFile> imageFiles){
+  void addImages(List<String> imageFiles){
     images.addAll(imageFiles);
     print("successfully added all");
   }
 
-  List<XFile> getImages(){
+  List<String> getImages(){
     return images;
   }
 

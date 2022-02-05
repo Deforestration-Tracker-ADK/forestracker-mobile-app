@@ -3,20 +3,37 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Authentication{
   static SharedPreferences _sharedPreferences;
 
-  static getToken(String tokenName) async{
-    if (_sharedPreferences == null){
-      _sharedPreferences = await SharedPreferences.getInstance();
-    }
-    return _sharedPreferences.getString(tokenName);
-  }
-  static setToken(String token,json) async {
-    _sharedPreferences = await SharedPreferences.getInstance();
-    _sharedPreferences.setString(token, json);
+  static Future<SharedPreferences> get _instance async => _sharedPreferences ??= await SharedPreferences.getInstance();
+
+  //call this method in main init
+  static Future<SharedPreferences> init() async {
+    _sharedPreferences = await _instance;
+    return _sharedPreferences;
   }
 
-  static removeTokens() async{
-    _sharedPreferences = await SharedPreferences.getInstance();
-    _sharedPreferences.clear();
+  static getToken(String tokenName) async{
+    var pref = await _instance;
+    return pref.getString(tokenName);
+  }
+
+  static setToken(String token,json) async {
+    var pref = await _instance;
+    pref.setString(token, json);
+  }
+
+  static Future<Set<String>> getAllKeys() async{
+    var pref = await _instance;
+    return pref.getKeys();
+  }
+
+  static removeKey(String key) async {
+    var pref = await _instance;
+    pref.remove(key);
+  }
+
+  static removeToken() async{
+    var pref = await _instance;
+    pref.clear();
   }
 
 

@@ -1,8 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:image_picker/image_picker.dart';
 
 abstract class ReportEvent extends Equatable{
-  final List<XFile> images;
+  final List<String> images;
   ReportEvent({this.images});
 }
 
@@ -53,7 +52,7 @@ class AddImagesEvent extends ReportEvent{
 }
 
 class SelectImagesEvent extends ReportEvent{
-  SelectImagesEvent(List<XFile> images) : super(images: images);
+  SelectImagesEvent(List<String> images) : super(images: images);
   @override
   List<Object> get props => [images];
 }
@@ -76,4 +75,18 @@ class RemoveImagesEvent extends ReportEvent{
 class ClearDataEvent extends ReportEvent{
   @override
   List<Object> get props => [];
+}
+
+class DraftSavingEvent extends ReportEvent{
+  final String location;
+
+  DraftSavingEvent({this.location});
+  @override
+  List<Object> get props => [location];
+}
+
+class SaveDraftEvent extends ReportEvent{
+  @override
+  List<Object> get props => [];
+
 }

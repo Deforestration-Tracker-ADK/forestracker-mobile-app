@@ -1,14 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/data_layer/models/images.dart';
 import 'package:forest_tracker/data_layer/models/report.dart';
+import 'package:forest_tracker/data_layer/services/auth_service.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
 
 class ReportBloc extends Bloc<ReportEvent,ReportState>{
-  String reportName = ReportCreationPage.reportNameController.value.text;
-  String location;
-  String description = ReportCreationPage.descriptionController.value.text;
+  int radioValue=0;
+  String name = ReportCreationPage.reportNameController.value.text;
   final Images images;
   final MultipleChoices multipleChoices;
   ReportBloc({this.multipleChoices, this.images}) : super(MultipleChoice(choices: multipleChoices.multiChoices));
@@ -39,11 +41,16 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
     if(event is ClearDataEvent){
       yield* _clearData(event);
     }
+
+    if (event is DraftSavingEvent){
+      yield* _saveDraftReport(event);
+    }
   }
 
   Stream<ReportState> _radioOption(RadioButtonEvent event) async*{
     try{
       yield TapedLoading();
+      this.radioValue = event.value;
       yield TappedChoice(value: event.value);
     }
     catch (e){
@@ -93,7 +100,7 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
     }
   }
 
-  Stream<ReportState> _clearData(ClearDataEvent event) async* {
+  Stream<ReportState> _clearData(ReportEvent event) async* {
     try {
       images.clearList();
       multipleChoices.clearValues();
@@ -107,9 +114,39 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
     }
   }
 
+  Stream<ReportState> _saveDraftReport(DraftSavingEvent event) async* {
+    String reportName = ReportCreationPage.reportNameController.value.text;
+    if(reportName.trim().isNotEmpty){
+      var load = await Authentication.getToken(reportName);
+      if(load == null){
+        final Report draftReport = Report(
+            name : ReportCreationPage.reportNameController.value.text,
+            description  :ReportCreationPage.descriptionController.value.text,
+            location:  event.location,
+            radioValue:   this.radioValue.toString(),
+            choices:  this.multipleChoices.convertToStringList(),
+            images:   this.images
+        );
 
+        try{
+          yield DraftSaving();
+          await Authentication.setToken(reportName, json.encode(draftReport.toJson()));
+          await Future.delayed(Duration(seconds: 2));
+          yield DraftSaved(draftReport: draftReport);
+          yield* _clearData(event);
+        }
+        catch(e){
+          yield Error(error: e.toString());
+        }
+      }else{
+        yield Loading();
+        yield InvalidReportName(warning: "Report Name has already used!");
+      }
+    }
+    else{
+      yield Loading();
+      yield InvalidReportName(warning: "Report Name Can not be Empty!");
+    }
 
-
-
-
+  }
 }

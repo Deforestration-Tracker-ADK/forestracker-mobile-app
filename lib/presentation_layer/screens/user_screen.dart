@@ -15,7 +15,9 @@ class UserPage extends StatelessWidget {
   UserPage({ this.name});
 
   _logOut(context) async{
-    Authentication.removeTokens();
+    Authentication.removeToken();
+    //Authentication.removeKey('token');
+    //Authentication.removeKey('userID');
     final bloc = BlocProvider.of<LoginBloc>(context);
     bloc.add(LogoutUser());
     Navigator.pushReplacementNamed(context, LoginScreen.id);

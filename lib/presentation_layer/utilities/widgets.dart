@@ -41,7 +41,8 @@ Widget customNewsTile(Article article, BuildContext context) => Column(
                   fontStyle: FontStyle.italic,
                   fontSize: 14.0,
                 )),
-            theme: ExpandableThemeData(useInkWell: true), collapsed: null,
+            theme: ExpandableThemeData(useInkWell: true),
+            collapsed: null,
           ),
         )
       ],
@@ -76,7 +77,7 @@ Widget customButton(
         double height = 42.0,
         double borderRadius = 30.0,
         double padding = 16.0,
-          double elevation = 5.0,
+        double elevation = 5.0,
         Function onPressed,
         TextStyle style}) =>
     Padding(
@@ -215,4 +216,32 @@ ListTile descriptionTile(String term1, String term2) {
         style: TextFontDecoration.copyWith(
             fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
       ));
+}
+
+Future<dynamic> dialogMsg(BuildContext context, String text,
+    {isNotify = false,fontSize =14}) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) {
+      if(isNotify == true){
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).pop(true);
+        });
+      }
+      return AlertDialog(
+        title: Text(
+          text,
+          style: TextStyle(
+            color: isNotify? Colors.red:Colors.black,
+            fontSize: 14
+          ),
+        ),
+        content: isNotify?null:Center(child: CircularProgressIndicator()),
+        elevation: 3,
+        scrollable: true,
+        actionsAlignment: MainAxisAlignment.center,
+      );
+    },
+  );
 }

@@ -6,6 +6,7 @@ import 'package:forest_tracker/logic_layer/cubits/select_location_cubit.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/logic_layer/states/selected_location_state.dart';
+import 'package:forest_tracker/presentation_layer/pages/save_draft_button.dart';
 import 'package:forest_tracker/presentation_layer/utilities/components.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
@@ -151,10 +152,8 @@ class ReportCreationPage extends StatelessWidget {
                     SizedBox(
                       height: 15,
                     ),
-                    customButton(
-                        color: Colors.lightGreen,
-                        text: 'Save Draft',
-                        onPressed: () {}),
+                    SaveDraftButton(color: Colors.lightGreen,
+                      text: 'Save Draft',),
                     SizedBox(
                       height: 8,
                     ),

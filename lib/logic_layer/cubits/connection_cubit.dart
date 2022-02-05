@@ -13,9 +13,7 @@ class ConnectionCubit extends Cubit<ConnectionStates> {
   }
 
   StreamSubscription<ConnectivityResult> connectionSetUp() {
-    print(connection);
     return connectionStream = connection.onConnectivityChanged.listen((status) {
-      print(status);
       if (status == ConnectivityResult.wifi || status == ConnectivityResult.mobile) {
         emitConnected();
       } else if (status == ConnectivityResult.none) {

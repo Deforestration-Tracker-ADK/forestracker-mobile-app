@@ -48,7 +48,7 @@ class _ProjectScreenState extends State<ProjectScreen> with AutomaticKeepAliveCl
     }
 
     void _onTap(String selected) {
-      if (selected == Constant.props[0]) {
+      if (selected == Constant.projectProps[0]) {
         BlocProvider.of<ProjectsBloc>(context).add(GetAllFavProjects());
         Navigator.pushNamed(context, FavProjectScreen.id);
       } else {
@@ -74,7 +74,7 @@ class _ProjectScreenState extends State<ProjectScreen> with AutomaticKeepAliveCl
         actions: [
           PopupMenuButton(
             itemBuilder: (context) {
-              return Constant.props
+              return Constant.projectProps
                   .map((selected) => PopupMenuItem(
                         value: selected,
                         child: Text(selected),

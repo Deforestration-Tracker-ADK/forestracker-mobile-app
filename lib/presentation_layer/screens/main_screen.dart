@@ -11,26 +11,15 @@ import 'project_screen.dart';
 import 'home_screen.dart';
 import 'map_screen.dart';
 
-class MainPage extends StatefulWidget {
+class MainPage extends StatelessWidget {
   static const String id = 'home_screen';
 
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  final PageController _controller = PageController();
+  static final PageController _controller = PageController();
   final List<Widget> _body = [HomePage(),ProjectScreen(), MapPage(), ReportPage(), UserPage(name: 'UserName',)];
 
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
-
-  void _changePage(value){
+  static changePage(int value,BuildContext context){
     final cubit = context.read<NavigationCubit>();
     cubit.navigate(value);
     _controller.jumpToPage(value);
@@ -58,7 +47,7 @@ class _MainPageState extends State<MainPage> {
             },
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
-              onPageChanged: _changePage,
+              onPageChanged:(value)=> changePage(value,context),
               controller: _controller,
               children: _body,
             ),
@@ -71,7 +60,7 @@ class _MainPageState extends State<MainPage> {
               selectedItemColor: Colors.blue,
               type: BottomNavigationBarType.fixed,
               showUnselectedLabels: false,
-              onTap: _changePage,
+              onTap: (value)=> changePage(value,context),
               currentIndex: state.index,
               items: [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
