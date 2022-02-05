@@ -87,7 +87,7 @@ class AddPhotosButton extends StatelessWidget {
             return false;
           },
           builder:(context,state){
-          var len = context.read<ReportBloc>().images.getImages().length;
+          var len = context.read<ReportBloc>().report.getImages().length;
           if (len==0){
             return Text("No Images Selected!!");
           }
@@ -109,7 +109,7 @@ class AddPhotosButton extends StatelessWidget {
                                 fit: StackFit.expand,
                                 children: [
                                   Image.file(
-                                    File(context.read<ReportBloc>().images.getImages()[index]),
+                                    File(context.read<ReportBloc>().report.getImages()[index]),
                                     fit: BoxFit.cover,
                                   ),
                                   Positioned(top: 5, right: 5,
@@ -198,7 +198,7 @@ class AddPhotosButton extends StatelessWidget {
           height: height,
           onPressed: () {
             if (state.images != null && state.images.length != 0) {
-              context.read<ReportBloc>().add(SelectImagesEvent(state.images));
+              context.read<ReportBloc>().add(SelectImagesEvent([]));
               return gridView(context);
             } else {
               context.read<ReportBloc>().add(AddImagesEvent());

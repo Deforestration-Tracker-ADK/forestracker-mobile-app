@@ -102,7 +102,7 @@ class ReportCreationPage extends StatelessWidget {
                       }
                       return false;
                     }, builder: (context, state) {
-                      List<bool> choiceState = context.watch<ReportBloc>().multipleChoices.multiChoices;
+                      List<bool> choiceState = context.watch<ReportBloc>().report.getChoiceList();
                       return Column(
                           children: reasons
                               .map((reason) => multipleChoices(

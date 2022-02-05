@@ -20,8 +20,6 @@ import 'package:forest_tracker/presentation_layer/screens/main_screen.dart';
 import 'package:forest_tracker/presentation_layer/pages/project_page.dart';
 import 'package:forest_tracker/presentation_layer/screens/report_screen.dart';
 import 'package:forest_tracker/presentation_layer/screens/welcome_screen.dart';
-import 'data_layer/models/images.dart';
-import 'data_layer/models/report.dart';
 import 'data_layer/services/auth_service.dart';
 import 'data_layer/services/location_service.dart';
 import 'data_layer/services/news_services.dart';
@@ -45,8 +43,8 @@ class _ForestTrackerState extends State<ForestTracker> {
   final NewsAPI newsAPI = NewsAPI();
   final GeoLocator geoLocator = GeoLocator();
   final SearchPlaces searchPlace = SearchPlaces();
-  final MultipleChoices multipleChoices = MultipleChoices();
-  final Images images = Images(images: List.empty(growable: true));
+
+
 
   @override
   void initState() {
@@ -68,7 +66,7 @@ class _ForestTrackerState extends State<ForestTracker> {
         BlocProvider<ProjectsBloc>(create: (context) => ProjectsBloc(projectAPI:projectAPI,projectBloc: context.read<ProjectBloc>())),
         BlocProvider<MapBloc>(create: (context)=>MapBloc(geoLocator:geoLocator ,searchPlaces: searchPlace)),
         BlocProvider<SelectLocationCubit>(create: (context) => SelectLocationCubit(searchPlaces: searchPlace)),
-        BlocProvider<ReportBloc>(create: (context)=>ReportBloc(images: images,multipleChoices: multipleChoices),)
+        BlocProvider<ReportBloc>(create: (context)=>ReportBloc(),)
       ],
       child: MaterialApp(
         initialRoute: WelcomeScreen.id,

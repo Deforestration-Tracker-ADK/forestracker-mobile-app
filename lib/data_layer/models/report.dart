@@ -1,68 +1,124 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:forest_tracker/data_layer/models/images.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Report extends Equatable{
-  final String name;
-  final String location;
-  final String radioValue;
-  final List<String> choices;
-  final String description;
-  final Images images;
+  String name;
+  String location;
+  String radioValue;
+  List<MultipleChoices> choices;
+  String description;
+  List<Images> imagesPath;
 
-  Report({this.name, this.location, this.radioValue, this.choices, this.description, this.images});
+  Report({this.name, this.location, this.radioValue, this.choices, this.description, this.imagesPath});
+
+  Report copyWith({String name,String location,String radioValue,List<MultipleChoices> choices,String description,List<Images> imagesPath}){
+    return Report(
+      name: this.name??name,
+      location: this.location??location,
+      radioValue: this.radioValue??radioValue,
+      choices: this.choices??choices,
+      description: this.description??description,
+      imagesPath: this.imagesPath??imagesPath
+    );
+  }
 
   @override
-  List<Object> get props => [name,location,radioValue,choices,description,images];
+  List<Object> get props => [name,location,radioValue,choices,description,imagesPath];
 
   factory Report.fromJson(Map<String,dynamic> jsonData){
+    var list1 = jsonData["images"] as List;
+    List<Images> images = list1.map((image) => Images.fromJson(image)).toList();
+
+    var list2 = jsonData["choices"] as List;
+    List<MultipleChoices> choices = list2.map((choice) => MultipleChoices.fromJson(choice)).toList();
     return Report(
       name: jsonData['name'] as String,
       location: jsonData['location'] as String,
       radioValue: jsonData['radioValue'] as String,
-      choices: jsonData['choices'] as List<String>,
+      choices: choices,
       description: jsonData['description'] as String,
-      images: Images.fromJson(jsonData['images'])
-    );
+      imagesPath: images);
   }
 
   Map<String,dynamic> toJson ()=>{
+
     'name':this.name,
     'location':this.location,
     'radioValue' : this.radioValue,
-    'choices' : this.choices,
+    'choices' : this.choices.map((choice) => MultipleChoices(choice: choice.choice).toJson()).toList(),
     'description' : this.description,
-    'images' : this.images.toJson()
+    'images' : this.imagesPath.map((image) => Images(imagePath: image.imagePath).toJson()).toList()
   };
 
+  void addImage(XFile imageFile){
+    this.imagesPath.add(Images(imagePath: imageFile.path));
+    print("successfully added");
+  }
 
+  void addImages(List<String> imageFiles){
+    List<Images> images = imageFiles.map((filePath) => Images(imagePath: filePath)).toList();
+    this.imagesPath.addAll(images);
+    print("successfully added all");
+  }
 
-}
+  List<String> getImages(){
+    List<String> imagesPath = this.imagesPath.map((image) => image.imagePath).toList();
+    return imagesPath;
+  }
 
-class MultipleChoices extends Equatable{
-  List<bool> _choices = List.filled(reasons.length, false);
+  void deleteImage(int index){
+    this.imagesPath.removeAt(index);
+    print("Successfully deleted");
+  }
 
-  List<bool> get multiChoices => this._choices;
+  void updateList(int index){
+    this.imagesPath.removeRange(index, imagesPath.length);
+  }
+
+  void clearList(){
+    this.imagesPath.clear();
+  }
 
   void updateValue(int index,bool value){
-    this._choices[index] = value;
+    this.choices[index] = MultipleChoices(choice: value);
+  }
+
+  List<bool> getChoiceList(){
+    return this.choices.map((choice) => choice.choice).toList();
   }
 
   void clearValues() {
-    this._choices = List.filled(reasons.length, false);
+    //.clear() cannot be used since size of choice is fixed
+    this.choices = List.filled(reasons.length, MultipleChoices(choice: false));
   }
+}
 
-  List<String> convertToStringList(){
-    return _choices.map((element)=> element? "true":"false").toList();
-  }
+class MultipleChoices extends Equatable{
+  final bool choice;
 
-  List<bool> convertToBoolList(List<String> list){
-    _choices = list.map((element)=> element=="true"?true:false).toList();
-    return _choices;
-  }
+  MultipleChoices({this.choice});
 
   @override
-  List<bool> get props => _choices;
+  List<bool> get props => [choice];
+
+  factory MultipleChoices.fromJson(Map<String,dynamic> jsonData){
+    return MultipleChoices(
+        choice: jsonData['choice'] as bool);
+  }
+
+  Map<String,dynamic> toJson() => {
+    'choice' : this.choice
+  };
+
+  // List<String> convertToStringList(){
+  //   return _choices.map((element)=> element? "true":"false").toList();
+  // }
+  //
+  // List<bool> convertToBoolList(List<String> list){
+  //   _choices = list.map((element)=> element=="true"?true:false).toList();
+  //   return _choices;
+  // }
 
 }

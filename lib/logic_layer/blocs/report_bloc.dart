@@ -1,19 +1,22 @@
 import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forest_tracker/data_layer/models/images.dart';
 import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/data_layer/services/auth_service.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
+import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 
 class ReportBloc extends Bloc<ReportEvent,ReportState>{
-  int radioValue=0;
-  String name = ReportCreationPage.reportNameController.value.text;
-  final Images images;
-  final MultipleChoices multipleChoices;
-  ReportBloc({this.multipleChoices, this.images}) : super(MultipleChoice(choices: multipleChoices.multiChoices));
+  final Report report = Report().copyWith(
+    name: ReportCreationPage.reportNameController.value.text,
+    radioValue: 0.toString(),
+    choices: List.filled(reasons.length, MultipleChoices(choice: false)),
+    description: ReportCreationPage.descriptionController.value.text,
+    imagesPath: List.empty(growable: true)
+  );
+  ReportBloc() : super(Loading());
 
   @override
   Stream<ReportState> mapEventToState(ReportEvent event) async*{
@@ -50,7 +53,7 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
   Stream<ReportState> _radioOption(RadioButtonEvent event) async*{
     try{
       yield TapedLoading();
-      this.radioValue = event.value;
+      this.report.radioValue = event.value.toString();
       yield TappedChoice(value: event.value);
     }
     catch (e){
@@ -60,21 +63,21 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
 
   Stream<ReportState> _multiChoice(MultiChoiceEvent event) async*{
     yield MultiChoiceLoading();
-    multipleChoices.updateValue(event.index, event.tapped);
-    yield MultipleChoice(choices: multipleChoices.multiChoices);
+    report.updateValue(event.index, event.tapped);
+    yield MultipleChoice(choices: report.getChoiceList());
   }
 
   Stream<ReportState> _selectImages(SelectImagesEvent event) async* {
     try {
       yield ImageLoading();
-      images.addImages(event.images);
+      report.addImages(event.images);
 
-      if(images.getImages().length>5){
-        images.updateList(5);
-        yield SelectMaxImages(images.getImages());
+      if(report.getImages().length>5){
+        report.updateList(5);
+        yield SelectMaxImages(report.getImages());
       }
       else{
-        yield SelectImages(images.getImages());
+        yield SelectImages(report.getImages());
       }
     } catch (e) {
       yield Error(error: e.toString());
@@ -84,8 +87,8 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
   Stream<ReportState> _deleteImages(DeleteImageEvent event) async* {
     try {
       yield ImageLoading();
-      images.deleteImage(event.imageId);
-      yield DeleteImage(images.getImages());
+      report.deleteImage(event.imageId);
+      yield DeleteImage(report.getImages());
     } catch (e) {
       yield Error(error: e.toString());
     }
@@ -93,8 +96,8 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
 
   Stream<ReportState> _removeImages(RemoveImagesEvent event) async* {
     try {
-      images.clearList();
-      yield SelectImages(images.getImages());
+      report.clearList();
+      yield SelectImages(report.getImages());
     } catch (e) {
       yield Error(error: e.toString());
     }
@@ -102,12 +105,12 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
 
   Stream<ReportState> _clearData(ReportEvent event) async* {
     try {
-      images.clearList();
-      multipleChoices.clearValues();
+      report.clearList();
       ReportCreationPage.descriptionController.clear();
       ReportCreationPage.reportNameController.clear();
-      yield SelectImages(images.getImages());
-      yield MultipleChoice(choices: multipleChoices.multiChoices);
+      report.clearValues();
+      yield SelectImages(report.getImages());
+      yield MultipleChoice(choices: List.filled(reasons.length, false),);
 
     } catch (e) {
       yield Error(error: e.toString());
@@ -123,9 +126,9 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
             name : ReportCreationPage.reportNameController.value.text,
             description  :ReportCreationPage.descriptionController.value.text,
             location:  event.location,
-            radioValue:   this.radioValue.toString(),
-            choices:  this.multipleChoices.convertToStringList(),
-            images:   this.images
+            radioValue:   this.report.radioValue.toString(),
+            choices:  this.report.choices,
+            imagesPath:   this.report.imagesPath
         );
 
         try{

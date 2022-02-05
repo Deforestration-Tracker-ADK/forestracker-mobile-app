@@ -1,48 +1,20 @@
 import 'package:equatable/equatable.dart';
-import 'package:image_picker/image_picker.dart';
 
 class Images extends Equatable{
-  final List<String> images;
+  final String imagePath;
 
-  Images({this.images});
+  Images({this.imagePath});
 
   @override
-  List<Object> get props => [images];
+  List<String> get props => [imagePath];
 
   factory Images.fromJson(Map<String,dynamic> jsonData){
     return Images(
-        images: jsonData['images'] as List<String>);
+        imagePath: jsonData['image'] as String);
   }
 
   Map<String,dynamic> toJson() => {
-    'images' : this.images
+    'image' : this.imagePath
   };
-
-  void addImage(XFile imageFile){
-    images.add(imageFile.path);
-    print("successfully added");
-  }
-
-  void addImages(List<String> imageFiles){
-    images.addAll(imageFiles);
-    print("successfully added all");
-  }
-
-  List<String> getImages(){
-    return images;
-  }
-
-  void deleteImage(int index){
-    images.removeAt(index);
-    print("Success fully deleted");
-  }
-
-  void updateList(int index){
-    images.removeRange(index, images.length);
-  }
-
-  void clearList(){
-    images.clear();
-  }
 
 }
