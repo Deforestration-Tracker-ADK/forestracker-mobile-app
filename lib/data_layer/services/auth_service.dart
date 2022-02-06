@@ -12,8 +12,7 @@ class Authentication{
   }
 
   static getToken(String tokenName) async{
-    var pref = await _instance;
-    return pref.getString(tokenName);
+    return _instance.then((value) => value.get(tokenName));
   }
 
   static setToken(String token,json) async {

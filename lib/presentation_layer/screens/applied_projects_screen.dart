@@ -39,7 +39,7 @@ class _AppliedProjectScreenState extends State<AppliedProjectScreen> {
               return ListView.builder(
                   itemCount: state.projects.length,
                   itemBuilder: (context, project) =>
-                      customCard(customTile(state.projects[project], _onPressed,noIcon: true))
+                      customCard(customProjectTile(state.projects[project], _onPressed,noIcon: true))
               );
             }
             else if(state is ProjectErrors){

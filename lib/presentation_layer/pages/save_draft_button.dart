@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/report_bloc.dart';
+import 'package:forest_tracker/logic_layer/blocs/reports_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/select_location_cubit.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
+import 'package:forest_tracker/logic_layer/events/reports_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/presentation_layer/screens/main_screen.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
+import 'package:intl/intl.dart';
 
 class SaveDraftButton extends StatelessWidget {
   final Color color;
@@ -23,8 +26,8 @@ class SaveDraftButton extends StatelessWidget {
         this.style});
 
   Future saveDraft(BuildContext context,String location) async{
-
-    context.read<ReportBloc>().add(DraftSavingEvent(location: location));
+    String date = DateFormat("yyyy-MM-dd").format(DateTime.now());
+    context.read<ReportBloc>().add(DraftSavingEvent(location: location,date: date));
 
   }
   @override
@@ -39,6 +42,7 @@ class SaveDraftButton extends StatelessWidget {
             Navigator.pop(context);
             //to pop up report page
             Navigator.pop(context);
+            context.read<ReportsBloc>().add(LoadReports());
             MainPage.changePage(3, context);
           }
           else if(state is InvalidReportName){

@@ -51,10 +51,9 @@ class _FavProjectScreenState extends State<FavProjectScreen> {
             return ListView.builder(
               itemCount: state.projects.length,
               itemBuilder: (context, project) {
-                print(project);
                   return Dismissible(
                     key: UniqueKey(),
-                    child: customCard(customTile(state.projects[project], _onPressed,noIcon: true)),
+                    child: customCard(customProjectTile(state.projects[project], _onPressed,noIcon: true)),
                     onDismissed:(direction)=> _onDismiss(state.projects[project],direction),
                     background: Container(color: Colors.greenAccent,)
                   );}

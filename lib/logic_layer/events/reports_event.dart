@@ -1,25 +1,35 @@
 import 'package:equatable/equatable.dart';
 
 abstract class ReportsEvent extends Equatable{
-  final int reportId;
+  final String reportName;
 
-  ReportsEvent({this.reportId});
+  ReportsEvent({this.reportName});
 }
 
-class LoadProjects extends ReportsEvent {
+class LoadReports extends ReportsEvent {
   @override
   List<Object> get props => [];
 }
 
 class EditReport extends ReportsEvent {
-  EditReport({int reportId}) : super(reportId: reportId);
+  EditReport({String reportName}) : super(reportName: reportName);
 
-  EditReport copyWith({int reportId}){
-    return EditReport(reportId: reportId??this.reportId);
+  EditReport copyWith({String reportName}){
+    return EditReport(reportName: reportName??this.reportName);
   }
 
   @override
-  List<int> get props => [reportId];
+  List<String> get props => [reportName];
+}
+
+class DeleteReport extends ReportsEvent{
+  final String reportName;
+
+  DeleteReport({this.reportName});
+
+  @override
+  List<String> get props => [reportName];
+
 }
 
 class GetAllSendReports extends ReportsEvent {

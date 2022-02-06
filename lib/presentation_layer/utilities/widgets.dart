@@ -2,6 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_tracker/data_layer/models/article.dart';
 import 'package:forest_tracker/data_layer/models/project.dart';
+import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/presentation_layer/utilities/validation.dart';
 
 import 'components.dart';
@@ -50,11 +51,11 @@ Widget customNewsTile(Article article, BuildContext context) => Column(
 
 // ),
 
-Widget customCard(Widget child, {double border = 16}) => Card(
+Widget customCard(Widget child, {double border = 16,Color shadowColor=Colors.green,Color color =Colors.greenAccent}) => Card(
       elevation: 5,
-      shadowColor: Colors.green,
+      shadowColor:shadowColor ,
       margin: EdgeInsets.all(10.0),
-      color: Colors.greenAccent,
+      color:color ,
       shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(border)),
       child: child,
@@ -109,7 +110,7 @@ Container badgeIcon({double width = 75, double height = 75}) => Container(
       ),
     );
 
-Widget customTile(Project project, Function onPressed,
+Widget customProjectTile(Project project, Function onPressed,
     {Function onTap, bool noIcon = false}) {
   bool isFav = project.isFav;
   Widget favIcon = noIcon
@@ -198,6 +199,65 @@ Widget customTile(Project project, Function onPressed,
     ],
   );
 }
+
+Widget customReportTile({int index,Report report, Function onEdit,Function onDelete,Animation<double> animation}) {
+  Widget deleteIcon = IconButton(
+    icon: Icon(
+      Icons.delete,
+      color: Colors.red,
+    ),
+    onPressed: () => onDelete(report,index),
+  );
+  return FadeTransition(
+    opacity: animation,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        deleteIcon,
+        Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              badgeIcon(),
+              SizedBox(
+                width: 5,
+              ),
+              Flexible(
+                flex: 2,
+                child: Container(
+                  padding: EdgeInsets.only(right: 30),
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        report.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      )),
+                ),
+              )
+            ]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SingleChildScrollView(
+              padding: EdgeInsets.only(left: 15),
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                report.dateTime,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+            buttonBar('Edit...', () => onEdit),
+          ],
+        )
+      ],
+    ),
+  );
+}
+
 
 ListTile descriptionTile(String term1, String term2) {
   return ListTile(

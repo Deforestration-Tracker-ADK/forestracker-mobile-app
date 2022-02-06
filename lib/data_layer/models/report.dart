@@ -10,8 +10,9 @@ class Report extends Equatable{
   List<MultipleChoices> choices;
   String description;
   List<Images> imagesPath;
+  String dateTime;
 
-  Report({this.name, this.location, this.radioValue, this.choices, this.description, this.imagesPath});
+  Report({this.name, this.location, this.radioValue, this.choices, this.description, this.imagesPath,this.dateTime});
 
   Report copyWith({String name,String location,String radioValue,List<MultipleChoices> choices,String description,List<Images> imagesPath}){
     return Report(
@@ -20,7 +21,8 @@ class Report extends Equatable{
       radioValue: this.radioValue??radioValue,
       choices: this.choices??choices,
       description: this.description??description,
-      imagesPath: this.imagesPath??imagesPath
+      imagesPath: this.imagesPath??imagesPath,
+      dateTime: this.dateTime
     );
   }
 
@@ -39,7 +41,9 @@ class Report extends Equatable{
       radioValue: jsonData['radioValue'] as String,
       choices: choices,
       description: jsonData['description'] as String,
-      imagesPath: images);
+      imagesPath: images,
+      dateTime: jsonData['date'] as String
+    );
   }
 
   Map<String,dynamic> toJson ()=>{
@@ -49,7 +53,8 @@ class Report extends Equatable{
     'radioValue' : this.radioValue,
     'choices' : this.choices.map((choice) => MultipleChoices(choice: choice.choice).toJson()).toList(),
     'description' : this.description,
-    'images' : this.imagesPath.map((image) => Images(imagePath: image.imagePath).toJson()).toList()
+    'images' : this.imagesPath.map((image) => Images(imagePath: image.imagePath).toJson()).toList(),
+    'date' :this.dateTime
   };
 
   void addImage(XFile imageFile){

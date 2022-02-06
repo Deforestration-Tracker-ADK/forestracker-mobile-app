@@ -45,6 +45,7 @@ dependencies:
   expandable: ^5.0.1
   html: ^0.15.0
   path_provider: ^2.0.8
+  intl: ^0.17.0
 
 
 dev_dependencies:

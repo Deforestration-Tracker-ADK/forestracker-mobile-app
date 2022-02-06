@@ -126,15 +126,16 @@ class ReportBloc extends Bloc<ReportEvent,ReportState>{
             name : ReportCreationPage.reportNameController.value.text,
             description  :ReportCreationPage.descriptionController.value.text,
             location:  event.location,
-            radioValue:   this.report.radioValue.toString(),
+            radioValue:   this.report.radioValue,
             choices:  this.report.choices,
-            imagesPath:   this.report.imagesPath
+            imagesPath:   this.report.imagesPath,
+            dateTime: event.date
         );
 
         try{
           yield DraftSaving();
           await Authentication.setToken(reportName, json.encode(draftReport.toJson()));
-          await Future.delayed(Duration(seconds: 2));
+          await Future.delayed(Duration(milliseconds: 1500));
           yield DraftSaved(draftReport: draftReport);
           yield* _clearData(event);
         }

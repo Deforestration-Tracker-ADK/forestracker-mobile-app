@@ -1,17 +1,18 @@
 import 'package:equatable/equatable.dart';
+import 'package:forest_tracker/data_layer/models/report.dart';
 
 abstract class ReportEvent extends Equatable{
   final List<String> images;
   ReportEvent({this.images});
 }
 
-class ReportNameEvent extends ReportEvent{
-  final String name;
+class ReportInitialEvent extends ReportEvent{
+  final Report report;
 
-  ReportNameEvent(this.name);
+  ReportInitialEvent({this.report});
 
   @override
-  List<Object> get props => [name];
+  List<Report> get props => [report];
 
 }
 
@@ -79,8 +80,9 @@ class ClearDataEvent extends ReportEvent{
 
 class DraftSavingEvent extends ReportEvent{
   final String location;
+  final String date;
 
-  DraftSavingEvent({this.location});
+  DraftSavingEvent({this.location,this.date});
   @override
   List<Object> get props => [location];
 }

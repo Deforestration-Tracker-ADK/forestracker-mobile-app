@@ -9,6 +9,15 @@ abstract class ReportState extends Equatable{
   ReportState({this.choices,this.images});
 }
 
+class InitialState extends ReportState{
+  final Report report;
+
+  InitialState({this.report});
+
+  @override
+  List<Report> get props => [report];
+}
+
 class Loading extends ReportState{
   @override
   List<Object> get props => [];

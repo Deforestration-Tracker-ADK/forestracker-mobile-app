@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/data_layer/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportAPI {
   static ReportAPI _instance;
@@ -19,20 +20,19 @@ class ReportAPI {
 
   Future<List<Report>> getDraftReports() async {
     final keys = await Authentication.getAllKeys();
+    final SharedPreferences shp = await Authentication.init();
     final result = keys
         .where((key) => key != "token" && key != "userID")
         .map<Report>((key) {
-          print(key);
-          var value = Authentication.getToken(key) as String;
-          print("VALUE : $value");
-
-          var decode = json.decode as Map<String,dynamic>;
-
-          print("DECODE: $decode");
+          String value = shp.getString(key) ;
+          var decode = jsonDecode(value) as Map<String,dynamic>;
       return Report.fromJson(decode);
     }).toList();
-    print(result);
-    print("ATHULEEEEEE");
     return result;
   }
+
+  void deleteDraftReport(String reportName) async{
+    await Authentication.removeKey(reportName);
+  }
+
 }

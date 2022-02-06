@@ -65,7 +65,7 @@ class _ProjectScreenState extends State<ProjectScreen> with AutomaticKeepAliveCl
                 }
               },
           builder: (context, state) =>
-              customTile(project, _onPressed, onTap: _onIconTap));
+              customProjectTile(project, _onPressed, onTap: _onIconTap));
     }
 
     return Scaffold(

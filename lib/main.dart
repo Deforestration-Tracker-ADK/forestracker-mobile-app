@@ -8,6 +8,7 @@ import 'package:forest_tracker/logic_layer/blocs/map_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/news_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/project_bloc.dart';
 import 'package:forest_tracker/logic_layer/blocs/projects_bloc.dart';
+import 'package:forest_tracker/logic_layer/blocs/reports_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/connection_cubit.dart';
 import 'package:forest_tracker/logic_layer/cubits/location_appbar_cubit.dart';
 import 'package:forest_tracker/logic_layer/cubits/navigation_cubit.dart';
@@ -66,6 +67,7 @@ class _ForestTrackerState extends State<ForestTracker> {
         BlocProvider<ProjectsBloc>(create: (context) => ProjectsBloc(projectAPI:projectAPI,projectBloc: context.read<ProjectBloc>())),
         BlocProvider<MapBloc>(create: (context)=>MapBloc(geoLocator:geoLocator ,searchPlaces: searchPlace)),
         BlocProvider<SelectLocationCubit>(create: (context) => SelectLocationCubit(searchPlaces: searchPlace)),
+        BlocProvider<ReportsBloc>(create: (context)=> ReportsBloc(),),
         BlocProvider<ReportBloc>(create: (context)=>ReportBloc(),)
       ],
       child: MaterialApp(
