@@ -1,7 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 abstract class SelectLocationStates extends Equatable{
-  final String place='';
+  final String place;
+  final double lat;
+  final double lon;
+
+  SelectLocationStates({this.place, this.lat, this.lon});
 }
 
 class LoadingState extends SelectLocationStates{
@@ -11,9 +15,11 @@ class LoadingState extends SelectLocationStates{
 
 class SelectedPlace extends SelectLocationStates{
   final String place;
+  final double lat;
+  final double lon;
 
-  SelectedPlace({this.place});
+  SelectedPlace({this.place,this.lat,this.lon});
 
   @override
-  List<String> get props => [place];
+  List<Object> get props => [place,lat,lon];
 }

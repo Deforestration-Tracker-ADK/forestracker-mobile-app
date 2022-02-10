@@ -6,17 +6,10 @@ abstract class ReportState extends Equatable{
   final int value = 0;
   final List<String> images;
   final List<bool> choices;
-  ReportState({this.choices,this.images});
+  final String warning;
+  ReportState({this.choices,this.images,this.warning});
 }
 
-class InitialState extends ReportState{
-  final Report report;
-
-  InitialState({this.report});
-
-  @override
-  List<Report> get props => [report];
-}
 
 class Loading extends ReportState{
   @override
@@ -27,7 +20,7 @@ class Loading extends ReportState{
 class InvalidReportName extends ReportState{
   final String warning;
 
-  InvalidReportName({this.warning});
+  InvalidReportName({this.warning}):super(warning: warning);
 
   @override
   List<String> get props => [warning];
@@ -103,6 +96,21 @@ class DraftSaved extends ReportState{
 
   @override
   List<Object> get props => [draftReport];
+}
+
+class LoadingEdit extends ReportState{
+  @override
+  List<Object> get props => [];
+
+}
+
+class EditLoaded extends ReportState{
+  final String reportName;
+
+  EditLoaded({this.reportName});
+  @override
+  List<String> get props => [reportName];
+
 }
 
 class Error extends ReportState{

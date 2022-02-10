@@ -1,28 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/logic_layer/blocs/report_bloc.dart';
+import 'package:forest_tracker/logic_layer/blocs/reports_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/select_location_cubit.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
+import 'package:forest_tracker/logic_layer/events/reports_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/logic_layer/states/selected_location_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/save_draft_button.dart';
 import 'package:forest_tracker/presentation_layer/utilities/components.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
+import 'package:intl/intl.dart';
 import 'add_photo_button.dart';
 
 class ReportCreationPage extends StatelessWidget {
   static const String id = 'report_page';
-
   static final reportNameController = TextEditingController();
   static final descriptionController = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
+    Map<String,dynamic> arguments = ModalRoute.of(context).settings.arguments ;
+    bool isCreated = arguments['isCreated'] as bool;
+    Report report = arguments['report'] as Report;
+    String draftButtonText = isCreated?'Save Draft':'Update Draft';
+
+    if(!isCreated){
+      context.read<SelectLocationCubit>().getLocationName(report.location.latitude,report.location.longitude);
+      context.read<ReportBloc>().add(EditEvent(report: report));
+    }
     return WillPopScope(
-      onWillPop: ()=>willPopUpSelection(context),
+      onWillPop: ()=>isCreated? willPopUpReportCreateSelection(context):willPopUpReportEditSelection(context, report),
       //to hide the keyboard when touch the screen
       child: GestureDetector(
         onTap: () {
@@ -32,134 +44,133 @@ class ReportCreationPage extends StatelessWidget {
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.greenAccent,
           appBar: AppBar(
-            title: Text('Create Report'),
+            title: isCreated?Text('Create Report'):Text('Edit Report'),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              color: Colors.greenAccent.shade100,
-              elevation: 5,
-              shadowColor: Colors.green,
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: ListView(
-                  children: [
-                    descriptionTile('1. ', 'Report Name :'),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20.0, right: 10),
-                      child: TextField(
-                        keyboardType: TextInputType.text,
-                        controller: reportNameController,
-                        maxLines: double.maxFinite.toInt(),
-                        minLines: 1,
-                        textAlignVertical: TextAlignVertical.top,
-                        textCapitalization: TextCapitalization.words,
-                        decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)),
-                            hintText: 'Enter Report Name...',
-                            hintStyle: TextFontDecoration.copyWith(
-                                fontStyle: FontStyle.italic, color: Colors.grey)),
-                        style: TextFontDecoration,
+          body: BlocListener<ReportBloc,ReportState>(
+            listener: (context,state){
+              if(state is LoadingEdit){
+                dialogMsg(context, "Please wait..!!");
+              }
+              if(state is EditLoaded){
+                Navigator.pop(context);
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                color: Colors.greenAccent.shade100,
+                elevation: 5,
+                shadowColor: Colors.green,
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: ListView(
+                    children: [
+                      descriptionTile('1. ', 'Report Name :'),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 10),
+                        child: TextField(
+                          keyboardType: TextInputType.text,
+                          controller: reportNameController,
+                          maxLines: double.maxFinite.toInt(),
+                          minLines: 1,
+                          textAlignVertical: TextAlignVertical.top,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black)),
+                              hintText: 'Enter Report Name...',
+                              hintStyle: TextFontDecoration.copyWith(
+                                  fontStyle: FontStyle.italic, color: Colors.grey)),
+                          style: TextFontDecoration,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    descriptionTile('2. ', 'Location : '),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20.0, right: 10),
-                      child: Builder(builder: (context) {
-                        final locationCubit =
-                            context.watch<SelectLocationCubit>().state;
-                        if (locationCubit is LoadingState) {
-                          return Center(
-                            child: LinearProgressIndicator(),
-                          );
-                        } else {
-                          return Text(
-                            locationCubit.place,
-                            style: TextFontDecoration,
-                            maxLines: double.maxFinite.toInt(),
-                          );
+                      SizedBox(
+                        height: 25,
+                      ),
+                      descriptionTile('2. ', 'Location : '),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 10),
+                        child: Builder(builder: (context) {
+                          final locationCubit =
+                              context.watch<SelectLocationCubit>().state;
+                          if (locationCubit is LoadingState) {
+                            return Center(
+                              child: LinearProgressIndicator(),
+                            );
+                          } else {
+                            return Text(
+                              locationCubit.place,
+                              style: TextFontDecoration,
+                              maxLines: double.maxFinite.toInt(),
+                            );
+                          }
+                        }),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      descriptionTile('3. ', 'Do you suspect any deforestation activities in above area ?'),
+                      radioButton('Yes', 0),
+                      radioButton('No', 1),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      descriptionTile('4. ', 'Any suspicious reasons ?'),
+                      BlocBuilder<ReportBloc, ReportState>(
+                          buildWhen: (prevState, state) {
+                        if (state is MultipleChoice) {
+                          return true;
                         }
-                      }),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    descriptionTile('3. ', 'Do you suspect any deforestation activities in above area ?'),
-                    radioButton('Yes', 0),
-                    radioButton('No', 1),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    descriptionTile('4. ', 'Any suspicious reasons ?'),
-                    BlocBuilder<ReportBloc, ReportState>(
-                        buildWhen: (prevState, state) {
-                      if (state is MultipleChoice) {
-                        return true;
-                      }
-                      return false;
-                    }, builder: (context, state) {
-                      List<bool> choiceState = context.watch<ReportBloc>().report.getChoiceList();
-                      return Column(
-                          children: reasons
-                              .map((reason) => multipleChoices(
-                                  reason,
-                                  choiceState[reasons.indexOf(reason)],
-                                  reasons.indexOf(reason),
-                                  context))
-                              .toList());
-                    }),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    descriptionTile('5. ', 'Description (Optional) : '),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20.0, right: 10),
-                      child: TextField(
-                        controller: descriptionController,
-                        keyboardType: TextInputType.text,
-                        maxLines: double.maxFinite.toInt(),
-                        minLines: 1,
-                        textAlignVertical: TextAlignVertical.top,
-                        textCapitalization: TextCapitalization.words,
-                        decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)),
-                            hintText: 'Type here...',
-                            hintStyle: TextFontDecoration.copyWith(
-                                fontStyle: FontStyle.italic, color: Colors.grey)),
-                        style: TextFontDecoration,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    BlocBuilder<ReportBloc,ReportState>(
-                      buildWhen: (prevState,state){
-                        if(state is AddImages ||state is SelectImages ||state is SelectMaxImages|| state is DeleteImage ){return true;}
                         return false;
-                      },
-                      builder: (context,state) {
-                        return AddPhotosButton(
-                          color: Colors.grey,
-                          text: (state.images !=null && state.images.length!=0)?'+ Add Photos (${state.images.length})':'+ Add Photos',
-                        );
-                      }
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    SaveDraftButton(color: Colors.lightGreen,
-                      text: 'Save Draft',),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    customButton(
-                        color: Colors.red, text: 'Send Report', onPressed: () {})
-                  ],
+                      }, builder: (context, state) {
+                        List<bool> choiceState = context.watch<ReportBloc>().report.getChoiceList();
+                        return Column(
+                            children: reasons
+                                .map((reason) => multipleChoices(
+                                    reason,
+                                    choiceState[reasons.indexOf(reason)],
+                                    reasons.indexOf(reason),
+                                    context))
+                                .toList());
+                      }),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      descriptionTile('5. ', 'Description (Optional) : '),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 10),
+                        child: TextField(
+                          controller: descriptionController,
+                          keyboardType: TextInputType.text,
+                          maxLines: double.maxFinite.toInt(),
+                          minLines: 1,
+                          textAlignVertical: TextAlignVertical.top,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black)),
+                              hintText: 'Type here...',
+                              hintStyle: TextFontDecoration.copyWith(
+                                  fontStyle: FontStyle.italic, color: Colors.grey)),
+                          style: TextFontDecoration,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      AddPhotosButton(color: Colors.grey),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      SaveDraftButton(color: Colors.lightGreen,
+                        text: draftButtonText,isCreated:isCreated,reportName:report!=null?report.name:""),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      customButton(
+                          color: Colors.red, text: 'Send Report', onPressed: () {})
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -169,7 +180,7 @@ class ReportCreationPage extends StatelessWidget {
     );
   }
 
-  Future<bool> willPopUpSelection(BuildContext context) async{
+  Future<bool> willPopUpReportCreateSelection(BuildContext context) async{
     bool willLeave = false;
     await showDialog(
         context: context,
@@ -217,6 +228,45 @@ class ReportCreationPage extends StatelessWidget {
             ));
     return willLeave;
   }
+  Future<bool> willPopUpReportEditSelection(BuildContext context,Report report) async{
+    bool willPop =false;
+    final bloc = BlocProvider.of<ReportBloc>(context,listen: false);
+    await showDialog(
+        context: context,
+        builder:(_){
+          String date = DateFormat("yyyy.MM.dd ':' hh:mm aaa").format(DateTime.now());
+          bloc.add(DraftSavingEvent(lat:report.location.latitude, lng:report.location.longitude,name:report.name,date: date,isNew: false));
+         return AlertDialog(
+           title: Text(
+             "Draft Saving..!!",
+             style: TextStyle(
+                 color: Colors.black,
+                 fontSize: 14
+             ),
+           ),
+           content: Center(child: CircularProgressIndicator()),
+           elevation: 3,
+           scrollable: true,
+           actionsAlignment: MainAxisAlignment.center,
+         );
+        });
+    if(bloc.state is InvalidReportName) {
+
+      //to pop the alert dialog
+      Navigator.pop(context);
+      dialogMsg(context,bloc.state.warning,isNotify: true);
+      willPop =false;
+    }
+
+    if(bloc.state is DraftSaved) {
+
+      context.read<ReportsBloc>().add(LoadReports());
+      willPop =true;
+      //to pop the alert dialog
+      Navigator.pop(context);
+    }
+    return willPop;
+  }
 
   ListTile radioButton(String text, int value) {
     return ListTile(
@@ -233,7 +283,7 @@ class ReportCreationPage extends StatelessWidget {
         },
         builder: (context,state) {
           return Radio<int>(
-            groupValue: state.value,
+            groupValue:  context.watch<ReportBloc>().report.getRadioValue(),
             value: value,
             onChanged: (value) {
                 context.read<ReportBloc>().add(RadioButtonEvent(value: value));

@@ -79,16 +79,30 @@ class ClearDataEvent extends ReportEvent{
 }
 
 class DraftSavingEvent extends ReportEvent{
-  final String location;
   final String date;
+  final double lat;
+  final double lng;
+  final bool isNew;
+  final String name;
 
-  DraftSavingEvent({this.location,this.date});
+  DraftSavingEvent({this.date,this.lat,this.lng,this.isNew,this.name});
   @override
-  List<Object> get props => [location];
+  List<Object> get props => [date,lng,lat,isNew,name];
 }
 
 class SaveDraftEvent extends ReportEvent{
   @override
   List<Object> get props => [];
+
+}
+
+class EditEvent extends ReportEvent{
+  final Report report;
+
+  EditEvent({this.report});
+
+  @override
+  List<Report> get props => [report];
+
 
 }

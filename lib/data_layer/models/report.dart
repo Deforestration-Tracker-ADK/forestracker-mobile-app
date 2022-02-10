@@ -1,11 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:forest_tracker/data_layer/models/images.dart';
+import 'package:forest_tracker/data_layer/models/map.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Report extends Equatable{
   String name;
-  String location;
+  Location location;
   String radioValue;
   List<MultipleChoices> choices;
   String description;
@@ -37,7 +38,7 @@ class Report extends Equatable{
     List<MultipleChoices> choices = list2.map((choice) => MultipleChoices.fromJson(choice)).toList();
     return Report(
       name: jsonData['name'] as String,
-      location: jsonData['location'] as String,
+      location:  Location.fromJson(jsonData['location']),
       radioValue: jsonData['radioValue'] as String,
       choices: choices,
       description: jsonData['description'] as String,
@@ -49,7 +50,7 @@ class Report extends Equatable{
   Map<String,dynamic> toJson ()=>{
 
     'name':this.name,
-    'location':this.location,
+    'location':this.location.toJson(),
     'radioValue' : this.radioValue,
     'choices' : this.choices.map((choice) => MultipleChoices(choice: choice.choice).toJson()).toList(),
     'description' : this.description,
@@ -98,6 +99,10 @@ class Report extends Equatable{
     //.clear() cannot be used since size of choice is fixed
     this.choices = List.filled(reasons.length, MultipleChoices(choice: false));
   }
+
+  int getRadioValue(){
+    return int.parse(this.radioValue);
+  }
 }
 
 class MultipleChoices extends Equatable{
@@ -117,13 +122,5 @@ class MultipleChoices extends Equatable{
     'choice' : this.choice
   };
 
-  // List<String> convertToStringList(){
-  //   return _choices.map((element)=> element? "true":"false").toList();
-  // }
-  //
-  // List<bool> convertToBoolList(List<String> list){
-  //   _choices = list.map((element)=> element=="true"?true:false).toList();
-  //   return _choices;
-  // }
 
 }

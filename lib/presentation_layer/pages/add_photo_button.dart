@@ -15,14 +15,12 @@ class AddPhotosButton extends StatelessWidget {
   final double borderRadius;
   final double minWidth;
   final double height;
-  final String text;
   final TextStyle style;
   AddPhotosButton(
       {this.color,
       this.borderRadius = 30,
       this.minWidth = 200.0,
       this.height = 42.0,
-      this.text,
       this.style});
 
   getImageFiles(ImageSource imageSources, BuildContext context) async {
@@ -189,15 +187,16 @@ class AddPhotosButton extends StatelessWidget {
         return false;
       },
       builder: (context, state) {
+        int length= context.watch<ReportBloc>().report.getImages().length??0;
         return customButton(
           color: color,
           borderRadius: borderRadius,
-          text: text,
+          text:(length!=0)?'+ Add Photos ($length)':'+ Add Photos',
           style: style,
           minWidth: minWidth,
           height: height,
           onPressed: () {
-            if (state.images != null && state.images.length != 0) {
+            if (length != 0) {
               context.read<ReportBloc>().add(SelectImagesEvent([]));
               return gridView(context);
             } else {

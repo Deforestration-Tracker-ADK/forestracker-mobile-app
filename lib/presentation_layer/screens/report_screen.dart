@@ -4,6 +4,7 @@ import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/logic_layer/blocs/reports_bloc.dart';
 import 'package:forest_tracker/logic_layer/events/reports_event.dart';
 import 'package:forest_tracker/logic_layer/states/reports_state.dart';
+import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 
@@ -22,38 +23,52 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
     context.read<ReportsBloc>().add(LoadReports());
     super.initState();
   }
-  void _onDelete(Report report,int index){
+
+  void _onDelete(Report report, int index) {
     context.read<ReportsBloc>().add(DeleteReport(reportName: report.name));
     _key.currentState.removeItem(
-          index,
-          (context, animation) => customReportTile(index:index,report: report, animation: animation, onDelete: _onDelete,onEdit: _onEdit),
+      index,
+      (context, animation) => customReportTile(
+          index: index,
+          report: report,
+          animation: animation,
+          onDelete: _onDelete,
+          onEdit: _onEdit),
     );
   }
 
-  void _onEdit(String prop){}
+  void _onEdit(Report report) {
+    Navigator.pushNamed(context, ReportCreationPage.id,arguments: {'isCreated': false, 'report': report});
+  }
+
+  void _onSelect(String prop) {}
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-          title:Text('Report Page'),
+        title: Text('Report Page'),
         actions: [
           PopupMenuButton(
             itemBuilder: (context) {
               return Constant.reportProps
                   .map((selected) => PopupMenuItem(
-                value: selected,
-                child: Text(selected),
-              ))
+                        value: selected,
+                        child: Text(selected),
+                      ))
                   .toList();
             },
-            onSelected: _onEdit,
+            onSelected: _onSelect,
           )
         ],
-      ),body: BlocBuilder<ReportsBloc, ReportsState>(
+      ),
+      body: BlocBuilder<ReportsBloc, ReportsState>(
         // ignore: missing_return
-        buildWhen: (prevState,state){
-          if(state is ReportsLoading||state is ReportsLoaded || state is ReportsErrors ){
+        buildWhen: (prevState, state) {
+          if (state is ReportsLoading ||
+              state is ReportsLoaded ||
+              state is ReportsErrors) {
             return true;
           }
           return false;
@@ -63,23 +78,24 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
           if (state is ReportsLoading) {
             return Center(child: CircularProgressIndicator());
           } else if (state is ReportsLoaded) {
-            if(state.reports.length==0){
-              return Center(child: Text("No draft reports!!!"),);
+            if (state.reports.length == 0) {
+              return Center(
+                child: Text("No draft reports!!!"),
+              );
             }
             return AnimatedList(
               key: _key,
               initialItemCount: state.reports.length,
-              itemBuilder: (context, index,animation) =>
-                  customCard(
-                      customReportTile(
-                          index: index,
-                          report: state.reports[index],
-                          onDelete: _onDelete,
-                          onEdit: _onEdit,
-                          animation: animation),
-                      color: Colors.limeAccent,
-                      shadowColor: Colors.orangeAccent,
-                  ),
+              itemBuilder: (context, index, animation) => customCard(
+                customReportTile(
+                    index: index,
+                    report: state.reports[index],
+                    onDelete: _onDelete,
+                    onEdit: _onEdit,
+                    animation: animation),
+                color: Colors.limeAccent,
+                shadowColor: Colors.orangeAccent,
+              ),
             );
           }
         },

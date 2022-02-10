@@ -17,16 +17,12 @@ class SearchPlaces{
   static final String _apiKey = '';
   
   static Future<List<Place>> getSearchedPlaces(String searchPlace) async{
-    var url = Uri.parse('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$searchPlace&types=geocode&key=$_apiKey');
+    var url = Uri.parse('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$searchPlace&types=geocode&components=country:lk&key=$_apiKey');
     var response = await http.get(url);
     if(response.statusCode==200){
       var jsonData = json.decode(response.body);
       var data = jsonData['predictions'] as List;
       return data.map((place) => Place.fromJson(place)).toList();
-    // .where((place) {
-    // final country = place.description.toLowerCase();
-    // return country.contains('sri lanka');
-    // })
     }
   }
   
@@ -41,8 +37,6 @@ class SearchPlaces{
   }
 
   Future<LocationName> selectedLocation(double lat,double lng) async{
-    print(lng);
-    print(lat);
     var url = Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$_apiKey');
     var response = await http.get(url);
     if(response.statusCode==200){

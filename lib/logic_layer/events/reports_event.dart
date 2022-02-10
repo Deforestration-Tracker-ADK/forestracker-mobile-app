@@ -22,6 +22,12 @@ class EditReport extends ReportsEvent {
   List<String> get props => [reportName];
 }
 
+class LoadingEditEvent extends ReportsEvent{
+  @override
+  List<Object> get props => [];
+
+}
+
 class DeleteReport extends ReportsEvent{
   final String reportName;
 

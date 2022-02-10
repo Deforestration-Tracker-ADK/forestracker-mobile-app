@@ -250,7 +250,7 @@ Widget customReportTile({int index,Report report, Function onEdit,Function onDel
                 maxLines: 1,
               ),
             ),
-            buttonBar('Edit...', () => onEdit),
+            buttonBar('Edit...', () => onEdit(report)),
           ],
         )
       ],

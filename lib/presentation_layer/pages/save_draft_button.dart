@@ -17,17 +17,21 @@ class SaveDraftButton extends StatelessWidget {
   final double height;
   final String text;
   final TextStyle style;
+  final String reportName;
+  final bool isCreated;
   SaveDraftButton(
       {this.color,
         this.borderRadius = 30,
         this.minWidth = 200.0,
         this.height = 42.0,
         this.text,
-        this.style});
+        this.style,
+      this.isCreated,
+      this.reportName});
 
-  Future saveDraft(BuildContext context,String location) async{
-    String date = DateFormat("yyyy-MM-dd").format(DateTime.now());
-    context.read<ReportBloc>().add(DraftSavingEvent(location: location,date: date));
+  Future saveDraft(BuildContext context,double lat,double lng,bool isCreated,String  reportName) async{
+    String date =DateFormat("yyyy.MM.dd ':' hh:mm aaa").format(DateTime.now());
+    context.read<ReportBloc>().add(DraftSavingEvent(lat:lat, lng:lng,date: date,isNew: isCreated,name: reportName));
 
   }
   @override
@@ -35,7 +39,7 @@ class SaveDraftButton extends StatelessWidget {
     return BlocConsumer<ReportBloc,ReportState>(
         listener:(context,state){
           if(state is DraftSaving){
-            dialogMsg(context, "Draft Saving!!");
+            dialogMsg(context, "Draft Saving..!!");
           }
           else if(state is DraftSaved){
             //to pop up notification
@@ -46,6 +50,8 @@ class SaveDraftButton extends StatelessWidget {
             MainPage.changePage(3, context);
           }
           else if(state is InvalidReportName){
+            //to pop up notification
+            Navigator.pop(context);
             dialogMsg(context, state.warning,fontSize:13,isNotify: true);
           }
 
@@ -64,7 +70,7 @@ class SaveDraftButton extends StatelessWidget {
           minWidth: minWidth,
           height: height,
           onPressed: () async{
-            await saveDraft(context,locationCubit.place);
+            await saveDraft(context,locationCubit.lat,locationCubit.lon,isCreated,reportName);
           },
         );
       }

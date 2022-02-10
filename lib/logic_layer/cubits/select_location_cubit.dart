@@ -9,13 +9,12 @@ class SelectLocationCubit extends Cubit<SelectLocationStates> {
   void getLocationName(double lat,double lng) async{
     emit(LoadingState());
     var response = await searchPlaces.selectedLocation(lat, lng);
-    print(response);
     if(response != null) {
-      emit(SelectedPlace(place: response.locationName));
+      emit(SelectedPlace(place: response.locationName,lat: lat,lon: lng));
     }
     else{
       String coordinates = '$lat,$lng';
-      emit(SelectedPlace(place:coordinates));
+      emit(SelectedPlace(place:coordinates,lat: lat,lon: lng));
     }
 
   }

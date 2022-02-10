@@ -6,9 +6,11 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:forest_tracker/data_layer/models/map.dart';
 import 'package:forest_tracker/data_layer/services/location_service.dart';
 import 'package:forest_tracker/logic_layer/blocs/map_bloc.dart';
+import 'package:forest_tracker/logic_layer/blocs/report_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/location_appbar_cubit.dart';
 import 'package:forest_tracker/logic_layer/cubits/select_location_cubit.dart';
 import 'package:forest_tracker/logic_layer/events/map_event.dart';
+import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/location_appbar_states.dart';
 import 'package:forest_tracker/logic_layer/states/map_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
@@ -19,7 +21,7 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
+class _MapPageState extends State<MapPage> {
   double _lat;
   double _lon;
   Completer<GoogleMapController> _googleMapController = Completer();
@@ -50,8 +52,6 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: AppBar().preferredSize,
@@ -175,7 +175,8 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
     if(_lat!=null && _lon!=null){
       _tapSearch(false);
       context.read<SelectLocationCubit>().getLocationName(_lat, _lon);
-      Navigator.pushNamed(context, ReportCreationPage.id);
+      context.read<ReportBloc>().add(ClearDataEvent());
+      Navigator.pushNamed(context, ReportCreationPage.id,arguments: {'isCreated': true, 'report': null});
     }
   }
 
@@ -196,6 +197,4 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

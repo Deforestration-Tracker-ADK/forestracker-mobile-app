@@ -21,8 +21,8 @@ class Location extends Equatable{
   }
 
   Map<String,dynamic> toJson() => {
-    'longitude' : this.longitude,
-    'latitude' : this.latitude,
+    'lng' : this.longitude,
+    'lat' : this.latitude,
   };
 
   @override

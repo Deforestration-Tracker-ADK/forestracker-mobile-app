@@ -28,6 +28,12 @@ class ReportsLoaded extends ReportsState{
   List<Report> get props => reports;
 }
 
+class EditReportLoading extends ReportsState{
+  @override
+  List<Object> get props => [];
+
+}
+
 class SendReportsLoaded extends ReportsState{
   final List<Report> reports;
   SendReportsLoaded({this.reports});
@@ -57,7 +63,7 @@ class SendReportsLoaded extends ReportsState{
 // }
 
 class ReportsErrors extends ReportsState{
-  String error;
+  final String error;
   ReportsErrors({this.error});
 
   @override

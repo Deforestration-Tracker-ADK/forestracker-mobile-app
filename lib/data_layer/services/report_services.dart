@@ -31,8 +31,34 @@ class ReportAPI {
     return result;
   }
 
+  Future<bool> saveDraftReport(String reportName,Report draftReport) async{
+    final value = await Authentication.getToken(reportName);
+    if(value==null){
+      await Authentication.setToken(reportName, json.encode(draftReport.toJson()));
+      return true;
+    }
+    //already exist name
+    return false;
+  }
+
+  Future<bool> updateDraftReport(String newName,String prevName,Report draftReport) async{
+    if(newName==prevName){
+      await Authentication.setToken(newName, json.encode(draftReport.toJson()));
+      return true;
+    }
+    final value = await Authentication.getToken(newName);
+    if(value==null){
+      await Authentication.removeKey(prevName);
+      await Authentication.setToken(newName, json.encode(draftReport.toJson()));
+      return true;
+    }
+    return false;
+  }
+
   void deleteDraftReport(String reportName) async{
     await Authentication.removeKey(reportName);
   }
+
+
 
 }
