@@ -13,14 +13,18 @@ import 'package:forest_tracker/logic_layer/cubits/connection_cubit.dart';
 import 'package:forest_tracker/logic_layer/cubits/location_appbar_cubit.dart';
 import 'package:forest_tracker/logic_layer/cubits/navigation_cubit.dart';
 import 'package:forest_tracker/presentation_layer/pages/article_page.dart';
-import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
-import 'package:forest_tracker/presentation_layer/screens/applied_projects_screen.dart';
-import 'package:forest_tracker/presentation_layer/screens/fav_projects_screen.dart';
+import 'package:forest_tracker/presentation_layer/pages/report_creation/report_creation_page.dart';
+import 'package:forest_tracker/presentation_layer/pages/send_reports_page.dart';
+import 'package:forest_tracker/presentation_layer/pages/applied_projects_page.dart';
+import 'package:forest_tracker/presentation_layer/pages/fav_projects_page.dart';
+import 'package:forest_tracker/presentation_layer/pages/view_send_report_page.dart';
 import 'package:forest_tracker/presentation_layer/screens/login_screen.dart';
 import 'package:forest_tracker/presentation_layer/screens/main_screen.dart';
 import 'package:forest_tracker/presentation_layer/pages/project_page.dart';
 import 'package:forest_tracker/presentation_layer/screens/report_screen.dart';
 import 'package:forest_tracker/presentation_layer/screens/welcome_screen.dart';
+import 'package:responsive_framework/responsive_wrapper.dart';
+import 'package:responsive_framework/utils/scroll_behavior.dart';
 import 'data_layer/services/auth_service.dart';
 import 'data_layer/services/location_service.dart';
 import 'data_layer/services/news_services.dart';
@@ -71,6 +75,20 @@ class _ForestTrackerState extends State<ForestTracker> {
         BlocProvider<ReportBloc>(create: (context)=>ReportBloc(),)
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        builder: (context, widget) => ResponsiveWrapper.builder(
+            BouncingScrollWrapper.builder(context, widget),
+            maxWidth: 1200,
+            minWidth: 450,
+            defaultScale: true,
+            breakpoints: [
+              ResponsiveBreakpoint.resize(450, name: MOBILE),
+              ResponsiveBreakpoint.autoScale(800, name: TABLET),
+              ResponsiveBreakpoint.autoScale(1000, name: TABLET),
+              ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+              ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+            ],
+            background: Container(color: Colors.blue)),
         initialRoute: WelcomeScreen.id,
         routes: {
           WelcomeScreen.id: (context) => WelcomeScreen(),
@@ -82,6 +100,8 @@ class _ForestTrackerState extends State<ForestTracker> {
           FavProjectScreen.id : (context) => FavProjectScreen(),
           AppliedProjectScreen.id : (context) => AppliedProjectScreen(),
           ReportCreationPage.id : (context) => ReportCreationPage(),
+          SendReportPage.id:(context)=> SendReportPage(),
+          ReportReviewPage.id:(context)=>ReportReviewPage()
         },
       ),
     );

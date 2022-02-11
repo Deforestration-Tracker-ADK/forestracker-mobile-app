@@ -7,12 +7,13 @@ import 'package:forest_tracker/logic_layer/cubits/select_location_cubit.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/logic_layer/states/selected_location_state.dart';
-import 'package:forest_tracker/presentation_layer/pages/save_draft_button.dart';
+import 'package:forest_tracker/presentation_layer/pages/report_creation/page_buttons/save_draft_button.dart';
+import 'package:forest_tracker/presentation_layer/pages/report_creation/page_buttons/send_report_button.dart';
 import 'package:forest_tracker/presentation_layer/utilities/components.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 import 'package:intl/intl.dart';
-import 'add_photo_button.dart';
+import 'page_buttons/add_photo_button.dart';
 
 class ReportCreationPage extends StatelessWidget {
   static const String id = 'report_page';
@@ -123,11 +124,11 @@ class ReportCreationPage extends StatelessWidget {
                       }, builder: (context, state) {
                         List<bool> choiceState = context.watch<ReportBloc>().report.getChoiceList();
                         return Column(
-                            children: reasons
+                            children: Constant.REASONS
                                 .map((reason) => multipleChoices(
                                     reason,
-                                    choiceState[reasons.indexOf(reason)],
-                                    reasons.indexOf(reason),
+                                    choiceState[Constant.REASONS.indexOf(reason)],
+                                    Constant.REASONS.indexOf(reason),
                                     context))
                                 .toList());
                       }),
@@ -161,12 +162,11 @@ class ReportCreationPage extends StatelessWidget {
                         height: 15,
                       ),
                       SaveDraftButton(color: Colors.lightGreen,
-                        text: draftButtonText,isCreated:isCreated),
+                        text: draftButtonText),
                       SizedBox(
                         height: 8,
                       ),
-                      customButton(
-                          color: Colors.red, text: 'Send Report', onPressed: () {})
+                      SendReportButton(color: Colors.red,text: 'Send Report'),
                     ],
                   ),
                 ),
@@ -230,7 +230,7 @@ class ReportCreationPage extends StatelessWidget {
     bool willPop =false;
     final bloc = BlocProvider.of<ReportBloc>(context,listen: false);
     String date = DateFormat("yyyy.MM.dd ':' hh:mm aaa").format(DateTime.now());
-    bloc.add(DraftSavingEvent(lat:report.location.latitude, lng:report.location.longitude,date: date,isNew: false));
+    bloc.add(DraftSavingEvent(lat:report.location.latitude, lng:report.location.longitude,date: date));
 
     //do not need to pop up or do anything
     //according to the state changes, save draft button class will react

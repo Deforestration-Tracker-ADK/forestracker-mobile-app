@@ -17,34 +17,32 @@ class SaveDraftButton extends StatelessWidget {
   final double height;
   final String text;
   final TextStyle style;
-  final bool isCreated;
   SaveDraftButton(
       {this.color,
         this.borderRadius = 30,
         this.minWidth = 200.0,
         this.height = 42.0,
         this.text,
-        this.style,
-      this.isCreated,});
+        this.style,});
 
-  Future saveDraft(BuildContext context,double lat,double lng,bool isCreated) async{
+  Future saveDraft(BuildContext context,double lat,double lng) async{
     String date =DateFormat("yyyy.MM.dd ':' hh:mm aaa").format(DateTime.now());
-    context.read<ReportBloc>().add(DraftSavingEvent(lat:lat, lng:lng,date: date,isNew: isCreated));
+    context.read<ReportBloc>().add(DraftSavingEvent(lat:lat, lng:lng,date: date));
 
   }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ReportBloc,ReportState>(
         listener:(context,state){
-          if(state is DraftSaving){
-            dialogMsg(context, "Draft Saving..!!");
+          if(state is PendingReport){
+            dialogMsg(context, state.message);
           }
           else if(state is DraftSaved){
             //to pop up notification
             Navigator.pop(context);
             //to pop up report page
             Navigator.pop(context);
-            context.read<ReportsBloc>().add(LoadReports());
+            context.read<ReportsBloc>().add(LoadDraftReports());
             MainPage.changePage(3, context);
           }
           else if(state is InvalidReportName){
@@ -55,7 +53,7 @@ class SaveDraftButton extends StatelessWidget {
 
         } ,
         buildWhen: (prevState,state){
-          if(state is DraftSaved ||state is DraftSaving ){return true;}
+          if(state is DraftSaved ||state is PendingReport ){return true;}
           return false;
         },
         builder: (context,state) {
@@ -68,7 +66,7 @@ class SaveDraftButton extends StatelessWidget {
           minWidth: minWidth,
           height: height,
           onPressed: () async{
-            await saveDraft(context,locationCubit.lat,locationCubit.lon,isCreated);
+            await saveDraft(context,locationCubit.lat,locationCubit.lon);
           },
         );
       }

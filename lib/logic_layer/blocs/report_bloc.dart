@@ -4,7 +4,7 @@ import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/data_layer/services/report_services.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
-import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
+import 'package:forest_tracker/presentation_layer/pages/report_creation/report_creation_page.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 
 class ReportBloc extends Bloc<ReportEvent, ReportState> {
@@ -12,7 +12,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   Report report = Report().copyWith(
       name: ReportCreationPage.reportNameController.value.text,
       radioValue: 0.toString(),
-      choices: List.filled(reasons.length, MultipleChoices(choice: false)),
+      choices: List.filled(Constant.REASONS.length, MultipleChoices(choice: false)),
       description: ReportCreationPage.descriptionController.value.text,
       imagesPath: List.empty(growable: true));
 
@@ -45,7 +45,11 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     }
 
     if (event is DraftSavingEvent) {
-      yield* _saveDraftReport(event);
+      yield* _saveReport(event,Constant.DRAFT_REPORT,Constant.DRAFT_REPORT_LOADING);
+    }
+
+    if (event is ReportSendingEvent) {
+      yield* _saveReport(event,Constant.SEND_REPORT,Constant.SEND_REPORT_LOADING);
     }
 
     if (event is EditEvent) {
@@ -112,7 +116,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       report.clearValues();
       yield SelectImages(report.getImages());
       yield MultipleChoice(
-        choices: List.filled(reasons.length, false),
+        choices: List.filled(Constant.REASONS.length, false),
       );
     } catch (e) {
       yield Error(error: e.toString());
@@ -121,7 +125,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   Stream<ReportState> _editReport(EditEvent event) async* {
     report = event.report;
-    _reportAPI.deleteDraftReport(event.report.name);
+    _reportAPI.deleteReport(event.report.name,Constant.DRAFT_REPORT);
     yield LoadingEdit();
     ReportCreationPage.reportNameController.text = report.name;
     ReportCreationPage.descriptionController.text = report.description;
@@ -131,26 +135,23 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     yield EditLoaded(reportName: report.name);
   }
 
-  Stream<ReportState> _saveDraftReport(DraftSavingEvent event) async* {
+  Stream<ReportState> _saveReport(ReportEvent event,String action,String message) async* {
     String reportName = ReportCreationPage.reportNameController.text;
-    final Report draftReport = Report(
-        name: ReportCreationPage.reportNameController.text.trim(),
-        description: ReportCreationPage.descriptionController.text.trim(),
-        location: Location(latitude: event.lat, longitude: event.lng),
-        radioValue: this.report.radioValue,
-        choices: this.report.choices,
-        imagesPath: this.report.imagesPath,
-        dateTime: event.date);
-
-    yield DraftSaving();
+    final Report report = _loadReport(event);
+    yield PendingReport(message: message);
     if (reportName.trim().isNotEmpty) {
         try {
-          //update report name to identify the draft reports from send reports in shared space
-          final String key = "0"+reportName ;
-          bool isAccepted = await _reportAPI.saveDraftReport(key, draftReport);
+          //update report name to identify the draft reports and send reports in shared space
+          final String key = action+reportName ;
+          bool isAccepted = await _reportAPI.saveReport(key, report);
           await Future.delayed(Duration(milliseconds: 1500));
           if (isAccepted) {
-            yield DraftSaved(draftReport: draftReport);
+            if(action == Constant.DRAFT_REPORT){
+              yield DraftSaved(draftReport: report);
+            }
+            else{
+              yield ReportSend(sendReport:report);
+            }
           } else {
             yield Loading();
             yield InvalidReportName(warning: "Report Name has already used!");
@@ -162,5 +163,18 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       yield Loading();
       yield InvalidReportName(warning: "Report Name Can not be Empty!");
     }
+  }
+
+
+
+  Report _loadReport(ReportEvent event){
+    return Report(
+        name: ReportCreationPage.reportNameController.text.trim(),
+        description: ReportCreationPage.descriptionController.text.trim(),
+        location: Location(latitude: event.lat, longitude: event.lng),
+        radioValue: this.report.radioValue,
+        choices: this.report.choices,
+        imagesPath: this.report.imagesPath,
+        dateTime: event.date);
   }
 }

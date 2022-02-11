@@ -70,6 +70,12 @@ class ReportsErrors extends ReportsState{
   List<String> get props => [error];
 }
 
+class SendReportsErrors extends ReportsState{
+  final String error;
+  SendReportsErrors({this.error});
 
+  @override
+  List<String> get props => [error];
+}
 
 

@@ -200,7 +200,7 @@ Widget customProjectTile(Project project, Function onPressed,
   );
 }
 
-Widget customReportTile({int index,Report report, Function onEdit,Function onDelete,Animation<double> animation}) {
+Widget customReportTile({int index,Report report, Function onEdit,Function onDelete,Animation<double> animation,String buttonText}) {
   Widget deleteIcon = IconButton(
     icon: Icon(
       Icons.delete,
@@ -250,7 +250,7 @@ Widget customReportTile({int index,Report report, Function onEdit,Function onDel
                 maxLines: 1,
               ),
             ),
-            buttonBar('Edit...', () => onEdit(report)),
+            buttonBar(buttonText, () => onEdit(report)),
           ],
         )
       ],
@@ -278,7 +278,7 @@ ListTile descriptionTile(String term1, String term2) {
       ));
 }
 
-Future<dynamic> dialogMsg(BuildContext context, String text,
+Future<Widget> dialogMsg(BuildContext context, String text,
     {isNotify = false,fontSize =14}) {
   return showDialog(
     context: context,
@@ -286,7 +286,7 @@ Future<dynamic> dialogMsg(BuildContext context, String text,
     builder: (_) {
       if(isNotify == true){
         Future.delayed(Duration(seconds: 2), () {
-          Navigator.of(context).pop(true);
+          Navigator.of(context).pop();
         });
       }
       return AlertDialog(

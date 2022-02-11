@@ -13,7 +13,7 @@ import 'package:forest_tracker/logic_layer/events/map_event.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/location_appbar_states.dart';
 import 'package:forest_tracker/logic_layer/states/map_state.dart';
-import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
+import 'package:forest_tracker/presentation_layer/pages/report_creation/report_creation_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPage extends StatefulWidget {

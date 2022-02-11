@@ -84,9 +84,12 @@ class DeleteImage extends ReportState{
 
 }
 
-class DraftSaving extends ReportState{
+class PendingReport extends ReportState{
+  final String message;
+
+  PendingReport({this.message});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [message];
 }
 
 class DraftSaved extends ReportState{
@@ -111,6 +114,17 @@ class EditLoaded extends ReportState{
   @override
   List<String> get props => [reportName];
 
+}
+
+
+
+class ReportSend extends ReportState{
+  final Report sendReport;
+
+  ReportSend({this.sendReport});
+
+  @override
+  List<Object> get props => [sendReport];
 }
 
 class Error extends ReportState{

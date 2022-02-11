@@ -15,11 +15,17 @@ class MainPage extends StatelessWidget {
   static const String id = 'home_screen';
 
   static final PageController _controller = PageController();
-  final List<Widget> _body = [HomePage(),ProjectScreen(), MapPage(), ReportPage(), UserPage(name: 'UserName',)];
+  final List<Widget> _body = [
+    HomePage(),
+    ProjectScreen(),
+    MapPage(),
+    ReportPage(),
+    UserPage(
+      name: 'UserName',
+    )
+  ];
 
-
-
-  static changePage(int value,BuildContext context){
+  static changePage(int value, BuildContext context) {
     final cubit = context.read<NavigationCubit>();
     cubit.navigate(value);
     _controller.jumpToPage(value);
@@ -27,27 +33,51 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isConnected = true;
     return SafeArea(
       child: Scaffold(
           body: BlocListener<ConnectionCubit, ConnectionStates>(
             listener: (context, state) => {
+            print(state),
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (state is Connected) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Connected !'),
-                    duration: Duration(seconds: 1),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Connected !'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                  if (!isConnected) {
+                    Navigator.pop(context);
+                    isConnected = true;
+                  }
                 } else if (state is Disconnected) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('No Connection!'),
-                    duration: Duration(seconds: 1),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('No Connection!'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (_) {
+                        isConnected = false;
+                        //to avoid dismissing pop up using back button
+                        return WillPopScope(
+                          onWillPop: () async => false,
+                          child: AlertDialog(
+                            content: Expanded(child: Image.asset('assets/images/no_connection.png')),
+                            elevation: 30,
+                          ),
+                        );
+                      });
                 }
               })
             },
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
-              onPageChanged:(value)=> changePage(value,context),
+              onPageChanged: (value) => changePage(value, context),
               controller: _controller,
               children: _body,
             ),
@@ -60,7 +90,7 @@ class MainPage extends StatelessWidget {
               selectedItemColor: Colors.blue,
               type: BottomNavigationBarType.fixed,
               showUnselectedLabels: false,
-              onTap: (value)=> changePage(value,context),
+              onTap: (value) => changePage(value, context),
               currentIndex: state.index,
               items: [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),

@@ -6,7 +6,7 @@ abstract class ReportsEvent extends Equatable{
   ReportsEvent({this.reportName});
 }
 
-class LoadReports extends ReportsEvent {
+class LoadDraftReports extends ReportsEvent {
   @override
   List<Object> get props => [];
 }
@@ -28,18 +28,27 @@ class LoadingEditEvent extends ReportsEvent{
 
 }
 
-class DeleteReport extends ReportsEvent{
+class DeleteDraftReport extends ReportsEvent{
   final String reportName;
 
-  DeleteReport({this.reportName});
+  DeleteDraftReport({this.reportName});
 
   @override
   List<String> get props => [reportName];
 
 }
 
-class GetAllSendReports extends ReportsEvent {
+class LoadSendReports extends ReportsEvent {
   @override
-  List<Object> get props =>[];
+  List<Object> get props => [];
 }
 
+class DeleteSendReport extends ReportsEvent{
+  final String reportName;
+
+  DeleteSendReport({this.reportName});
+
+  @override
+  List<String> get props => [reportName];
+
+}

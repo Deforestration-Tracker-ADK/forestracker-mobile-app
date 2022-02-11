@@ -3,7 +3,10 @@ import 'package:forest_tracker/data_layer/models/report.dart';
 
 abstract class ReportEvent extends Equatable{
   final List<String> images;
-  ReportEvent({this.images});
+  final String date;
+  final double lat;
+  final double lng;
+  ReportEvent({this.date, this.lat, this.lng, this.images});
 }
 
 class ReportInitialEvent extends ReportEvent{
@@ -82,18 +85,22 @@ class DraftSavingEvent extends ReportEvent{
   final String date;
   final double lat;
   final double lng;
-  final bool isNew;
 
-  DraftSavingEvent({this.date,this.lat,this.lng,this.isNew});
+  DraftSavingEvent({this.date,this.lat,this.lng});
   @override
-  List<Object> get props => [date,lng,lat,isNew];
+  List<Object> get props => [date,lng,lat];
 }
 
-class SaveDraftEvent extends ReportEvent{
-  @override
-  List<Object> get props => [];
+class ReportSendingEvent extends ReportEvent{
+  final String date;
+  final double lat;
+  final double lng;
 
+  ReportSendingEvent({this.date,this.lat,this.lng});
+  @override
+  List<Object> get props => [date,lng,lat];
 }
+
 
 class EditEvent extends ReportEvent{
   final Report report;

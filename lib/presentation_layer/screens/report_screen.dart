@@ -4,7 +4,8 @@ import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/logic_layer/blocs/reports_bloc.dart';
 import 'package:forest_tracker/logic_layer/events/reports_event.dart';
 import 'package:forest_tracker/logic_layer/states/reports_state.dart';
-import 'package:forest_tracker/presentation_layer/pages/report_creation_page.dart';
+import 'package:forest_tracker/presentation_layer/pages/report_creation/report_creation_page.dart';
+import 'package:forest_tracker/presentation_layer/pages/send_reports_page.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 
@@ -20,12 +21,12 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
 
   @override
   void initState() {
-    context.read<ReportsBloc>().add(LoadReports());
+    context.read<ReportsBloc>().add(LoadDraftReports());
     super.initState();
   }
 
   void _onDelete(Report report, int index) {
-    context.read<ReportsBloc>().add(DeleteReport(reportName: report.name));
+    context.read<ReportsBloc>().add(DeleteDraftReport(reportName: report.name));
     _key.currentState.removeItem(
       index,
       (context, animation) => customReportTile(
@@ -33,7 +34,9 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
           report: report,
           animation: animation,
           onDelete: _onDelete,
-          onEdit: _onEdit),
+          onEdit: _onEdit,
+        buttonText: "Edit.."
+      ),
     );
   }
 
@@ -41,7 +44,10 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
     Navigator.pushNamed(context, ReportCreationPage.id,arguments: {'isCreated': false, 'report': report});
   }
 
-  void _onSelect(String prop) {}
+  void _onSelect(String prop) {
+    context.read<ReportsBloc>().add(LoadSendReports());
+    Navigator.pushNamed(context, SendReportPage.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +58,7 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
         actions: [
           PopupMenuButton(
             itemBuilder: (context) {
-              return Constant.reportProps
+              return Constant.REPORT_PROPS
                   .map((selected) => PopupMenuItem(
                         value: selected,
                         child: Text(selected),
@@ -92,7 +98,9 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
                     report: state.reports[index],
                     onDelete: _onDelete,
                     onEdit: _onEdit,
-                    animation: animation),
+                    animation: animation,
+                    buttonText: "Edit.."
+                ),
                 color: Colors.limeAccent,
                 shadowColor: Colors.orangeAccent,
               ),

@@ -18,11 +18,11 @@ class ReportAPI {
     return _instance;
   }
 
-  Future<List<Report>> getDraftReports() async {
+  Future<List<Report>> getDraftReports(String action) async {
     final keys = await Authentication.getAllKeys();
     final SharedPreferences shp = await Authentication.init();
     final result = keys
-        .where((key) => key.startsWith("0"))//draft reports are saved with the prefix of 0
+        .where((key) => key.startsWith(action))//draft reports are saved with the prefix of 0
         .map<Report>((key) {
           String value = shp.getString(key) ;
           var decode = jsonDecode(value) as Map<String,dynamic>;
@@ -31,10 +31,10 @@ class ReportAPI {
     return result;
   }
 
-  Future<bool> saveDraftReport(String reportName,Report draftReport) async{
+  Future<bool> saveReport(String reportName,Report report) async{
     final hasKey = await Authentication.checkKey(reportName);
     if(!hasKey){
-      await Authentication.setToken(reportName, json.encode(draftReport.toJson()));
+      await Authentication.setToken(reportName, json.encode(report.toJson()));
       return true;
     }
     //already exist name
@@ -42,9 +42,12 @@ class ReportAPI {
   }
 
 
-  void deleteDraftReport(String reportName) async{
-    await Authentication.removeKey(reportName);
+  void deleteReport(String reportName,String action) async{
+    final String key = action+ reportName;
+    await Authentication.removeKey(key);
   }
+
+
 
 
 

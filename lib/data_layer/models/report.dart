@@ -97,7 +97,7 @@ class Report extends Equatable{
 
   void clearValues() {
     //.clear() cannot be used since size of choice is fixed
-    this.choices = List.filled(reasons.length, MultipleChoices(choice: false));
+    this.choices = List.filled(Constant.REASONS.length, MultipleChoices(choice: false));
   }
 
   int getRadioValue(){

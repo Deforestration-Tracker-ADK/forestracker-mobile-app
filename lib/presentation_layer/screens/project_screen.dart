@@ -12,8 +12,8 @@ import 'package:forest_tracker/logic_layer/states/projects_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/project_page.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
-import 'applied_projects_screen.dart';
-import 'fav_projects_screen.dart';
+import '../pages/applied_projects_page.dart';
+import '../pages/fav_projects_page.dart';
 
 class ProjectScreen extends StatefulWidget {
   static const String id = 'project_screen';
@@ -48,7 +48,7 @@ class _ProjectScreenState extends State<ProjectScreen> with AutomaticKeepAliveCl
     }
 
     void _onTap(String selected) {
-      if (selected == Constant.projectProps[0]) {
+      if (selected == Constant.PROJECTS_PROPS[0]) {
         BlocProvider.of<ProjectsBloc>(context).add(GetAllFavProjects());
         Navigator.pushNamed(context, FavProjectScreen.id);
       } else {
@@ -74,7 +74,7 @@ class _ProjectScreenState extends State<ProjectScreen> with AutomaticKeepAliveCl
         actions: [
           PopupMenuButton(
             itemBuilder: (context) {
-              return Constant.projectProps
+              return Constant.PROJECTS_PROPS
                   .map((selected) => PopupMenuItem(
                         value: selected,
                         child: Text(selected),
