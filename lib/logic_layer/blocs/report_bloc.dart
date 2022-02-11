@@ -121,6 +121,7 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   Stream<ReportState> _editReport(EditEvent event) async* {
     report = event.report;
+    _reportAPI.deleteDraftReport(event.report.name);
     yield LoadingEdit();
     ReportCreationPage.reportNameController.text = report.name;
     ReportCreationPage.descriptionController.text = report.description;
@@ -131,7 +132,6 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }
 
   Stream<ReportState> _saveDraftReport(DraftSavingEvent event) async* {
-    bool isAccepted;
     String reportName = ReportCreationPage.reportNameController.text;
     final Report draftReport = Report(
         name: ReportCreationPage.reportNameController.text.trim(),
@@ -144,9 +144,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     yield DraftSaving();
     if (reportName.trim().isNotEmpty) {
-      if (event.isNew) {
         try {
-          isAccepted = await _reportAPI.saveDraftReport(reportName, draftReport);
+          //update report name to identify the draft reports from send reports in shared space
+          final String key = "0"+reportName ;
+          bool isAccepted = await _reportAPI.saveDraftReport(key, draftReport);
           await Future.delayed(Duration(milliseconds: 1500));
           if (isAccepted) {
             yield DraftSaved(draftReport: draftReport);
@@ -157,20 +158,6 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
         } catch (e) {
           yield Error(error: e.toString());
         }
-      } else {
-        try {
-          isAccepted = await _reportAPI.updateDraftReport(reportName, event.name, draftReport);
-          await Future.delayed(Duration(milliseconds: 1500));
-          if (isAccepted) {
-            yield DraftSaved(draftReport: draftReport);
-          } else {
-            yield Loading();
-            yield InvalidReportName(warning: "Report Name has already used!");
-          }
-        } catch (e) {
-          yield Error(error: e.toString());
-        }
-      }
     } else {
       yield Loading();
       yield InvalidReportName(warning: "Report Name Can not be Empty!");

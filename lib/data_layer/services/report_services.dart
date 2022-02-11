@@ -22,7 +22,7 @@ class ReportAPI {
     final keys = await Authentication.getAllKeys();
     final SharedPreferences shp = await Authentication.init();
     final result = keys
-        .where((key) => key != "token" && key != "userID")
+        .where((key) => key.startsWith("0"))//draft reports are saved with the prefix of 0
         .map<Report>((key) {
           String value = shp.getString(key) ;
           var decode = jsonDecode(value) as Map<String,dynamic>;
@@ -32,8 +32,8 @@ class ReportAPI {
   }
 
   Future<bool> saveDraftReport(String reportName,Report draftReport) async{
-    final value = await Authentication.getToken(reportName);
-    if(value==null){
+    final hasKey = await Authentication.checkKey(reportName);
+    if(!hasKey){
       await Authentication.setToken(reportName, json.encode(draftReport.toJson()));
       return true;
     }
@@ -41,19 +41,6 @@ class ReportAPI {
     return false;
   }
 
-  Future<bool> updateDraftReport(String newName,String prevName,Report draftReport) async{
-    if(newName==prevName){
-      await Authentication.setToken(newName, json.encode(draftReport.toJson()));
-      return true;
-    }
-    final value = await Authentication.getToken(newName);
-    if(value==null){
-      await Authentication.removeKey(prevName);
-      await Authentication.setToken(newName, json.encode(draftReport.toJson()));
-      return true;
-    }
-    return false;
-  }
 
   void deleteDraftReport(String reportName) async{
     await Authentication.removeKey(reportName);

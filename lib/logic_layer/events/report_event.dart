@@ -83,11 +83,10 @@ class DraftSavingEvent extends ReportEvent{
   final double lat;
   final double lng;
   final bool isNew;
-  final String name;
 
-  DraftSavingEvent({this.date,this.lat,this.lng,this.isNew,this.name});
+  DraftSavingEvent({this.date,this.lat,this.lng,this.isNew});
   @override
-  List<Object> get props => [date,lng,lat,isNew,name];
+  List<Object> get props => [date,lng,lat,isNew];
 }
 
 class SaveDraftEvent extends ReportEvent{

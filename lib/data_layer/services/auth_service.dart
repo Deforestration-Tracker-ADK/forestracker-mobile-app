@@ -25,6 +25,11 @@ class Authentication{
     return pref.getKeys();
   }
 
+  static Future<bool> checkKey(String key) async{
+    var pref = await _instance;
+    return pref.containsKey(key);
+  }
+
   static removeKey(String key) async {
     var pref = await _instance;
     pref.remove(key);

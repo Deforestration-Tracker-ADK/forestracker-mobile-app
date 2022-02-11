@@ -17,7 +17,6 @@ class SaveDraftButton extends StatelessWidget {
   final double height;
   final String text;
   final TextStyle style;
-  final String reportName;
   final bool isCreated;
   SaveDraftButton(
       {this.color,
@@ -26,12 +25,11 @@ class SaveDraftButton extends StatelessWidget {
         this.height = 42.0,
         this.text,
         this.style,
-      this.isCreated,
-      this.reportName});
+      this.isCreated,});
 
-  Future saveDraft(BuildContext context,double lat,double lng,bool isCreated,String  reportName) async{
+  Future saveDraft(BuildContext context,double lat,double lng,bool isCreated) async{
     String date =DateFormat("yyyy.MM.dd ':' hh:mm aaa").format(DateTime.now());
-    context.read<ReportBloc>().add(DraftSavingEvent(lat:lat, lng:lng,date: date,isNew: isCreated,name: reportName));
+    context.read<ReportBloc>().add(DraftSavingEvent(lat:lat, lng:lng,date: date,isNew: isCreated));
 
   }
   @override
@@ -70,7 +68,7 @@ class SaveDraftButton extends StatelessWidget {
           minWidth: minWidth,
           height: height,
           onPressed: () async{
-            await saveDraft(context,locationCubit.lat,locationCubit.lon,isCreated,reportName);
+            await saveDraft(context,locationCubit.lat,locationCubit.lon,isCreated);
           },
         );
       }

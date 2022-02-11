@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/data_layer/models/report.dart';
 import 'package:forest_tracker/logic_layer/blocs/report_bloc.dart';
-import 'package:forest_tracker/logic_layer/blocs/reports_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/select_location_cubit.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
-import 'package:forest_tracker/logic_layer/events/reports_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
 import 'package:forest_tracker/logic_layer/states/selected_location_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/save_draft_button.dart';
@@ -163,7 +161,7 @@ class ReportCreationPage extends StatelessWidget {
                         height: 15,
                       ),
                       SaveDraftButton(color: Colors.lightGreen,
-                        text: draftButtonText,isCreated:isCreated,reportName:report!=null?report.name:""),
+                        text: draftButtonText,isCreated:isCreated),
                       SizedBox(
                         height: 8,
                       ),
@@ -231,39 +229,17 @@ class ReportCreationPage extends StatelessWidget {
   Future<bool> willPopUpReportEditSelection(BuildContext context,Report report) async{
     bool willPop =false;
     final bloc = BlocProvider.of<ReportBloc>(context,listen: false);
-    await showDialog(
-        context: context,
-        builder:(_){
-          String date = DateFormat("yyyy.MM.dd ':' hh:mm aaa").format(DateTime.now());
-          bloc.add(DraftSavingEvent(lat:report.location.latitude, lng:report.location.longitude,name:report.name,date: date,isNew: false));
-         return AlertDialog(
-           title: Text(
-             "Draft Saving..!!",
-             style: TextStyle(
-                 color: Colors.black,
-                 fontSize: 14
-             ),
-           ),
-           content: Center(child: CircularProgressIndicator()),
-           elevation: 3,
-           scrollable: true,
-           actionsAlignment: MainAxisAlignment.center,
-         );
-        });
-    if(bloc.state is InvalidReportName) {
+    String date = DateFormat("yyyy.MM.dd ':' hh:mm aaa").format(DateTime.now());
+    bloc.add(DraftSavingEvent(lat:report.location.latitude, lng:report.location.longitude,date: date,isNew: false));
 
-      //to pop the alert dialog
-      Navigator.pop(context);
-      dialogMsg(context,bloc.state.warning,isNotify: true);
+    //do not need to pop up or do anything
+    //according to the state changes, save draft button class will react
+    if(bloc.state is InvalidReportName) {
       willPop =false;
     }
 
     if(bloc.state is DraftSaved) {
-
-      context.read<ReportsBloc>().add(LoadReports());
-      willPop =true;
-      //to pop the alert dialog
-      Navigator.pop(context);
+      willPop =false;
     }
     return willPop;
   }
