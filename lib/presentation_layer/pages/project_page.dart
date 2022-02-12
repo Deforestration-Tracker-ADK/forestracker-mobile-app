@@ -19,25 +19,25 @@ class _ProjectPageState extends State<ProjectPage> {
   bool isLoading = false;
   bool isApplied = false;
 
-
-
   Widget customActionButton(BuildContext context, Project project) {
     return customButton(
-        onPressed: isLoading ? null : () async {
-          final bloc = context.read<ProjectBloc>();
-          if(isApplied){
-            bloc.add(CancelProject(
-                projectId: project.projectID, userId: 1));
-          }
-          else if(!isApplied){
-            bloc.add(ApplyProject(
-                projectId: project.projectID, userId: 1));
-          }
-        },
+        onPressed: isLoading
+            ? null
+            : () async {
+                final bloc = context.read<ProjectBloc>();
+                if (isApplied) {
+                  bloc.add(
+                      CancelProject(projectId: project.projectID, userId: 1));
+                } else if (!isApplied) {
+                  bloc.add(
+                      ApplyProject(projectId: project.projectID, userId: 1));
+                }
+              },
         text: isApplied ? 'Cancel' : 'Apply',
         style: TextStyle(fontSize: 20),
-        color: isApplied? Colors.red:Colors.blue);
+        color: isApplied ? Colors.red : Colors.blue);
   }
+
   @override
   Widget build(BuildContext context) {
     Project project = ModalRoute.of(context).settings.arguments as Project;
@@ -46,9 +46,23 @@ class _ProjectPageState extends State<ProjectPage> {
         appBar: AppBar(
           title: Text('Project'),
         ),
-        body: BlocBuilder<ProjectsBloc, ProjectsStates>(
-          buildWhen: (prevState,state){
-            if(state is ProjectLoading || state is ProjectLoaded || state is ProjectErrors ){
+        body: BlocConsumer<ProjectsBloc, ProjectsStates>(
+          listenWhen: (prev, current) {
+            if (current is ProjectErrors) {
+              return true;
+            }
+            return false;
+          },
+          listener: (context, state) {
+            if (state is ProjectErrors) {
+              errorPopUp(context, () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }, msg: state.error);
+            }
+          },
+          buildWhen: (prevState, state) {
+            if (state is ProjectLoading || state is ProjectLoaded) {
               return true;
             }
             return false;
@@ -60,8 +74,7 @@ class _ProjectPageState extends State<ProjectPage> {
               isApplied = state.applied;
               return SingleChildScrollView(
                   padding: EdgeInsets.all(5),
-                  child: customCard(builderPage(project), border: 10)
-              );
+                  child: customCard(builderPage(project), border: 10));
             } else {
               print(state);
               throw ('error');
@@ -74,51 +87,58 @@ class _ProjectPageState extends State<ProjectPage> {
 
   Widget builderPage(Project project) {
     return WillPopScope(
-      onWillPop: () async=> !isLoading,
+      onWillPop: () async => !isLoading,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15.0, right: 8, bottom: 8, top: 25),
+        padding:
+            const EdgeInsets.only(left: 15.0, right: 8, bottom: 8, top: 25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(child: badgeIcon(width: 100, height: 100)),
             SizedBox(height: 30),
-            descriptionTile('Project : ',project.projectName),
-            SizedBox(height: 8,),
-            descriptionTile('Organization : ',project.organization),
-            SizedBox(height: 8,),
-            descriptionTile('Location : ',project.location),
-            SizedBox(height: 8,),
-            descriptionTile('Date : ',project.onDate),
-            SizedBox(height: 8,),
-            descriptionTile('Description : ',project.description),
-            SizedBox(height: 8,),
-            descriptionTile('Published Date : ',project.publishedDate),
+            descriptionTile('Project : ', project.projectName),
+            SizedBox(
+              height: 8,
+            ),
+            descriptionTile('Organization : ', project.organization),
+            SizedBox(
+              height: 8,
+            ),
+            descriptionTile('Location : ', project.location),
+            SizedBox(
+              height: 8,
+            ),
+            descriptionTile('Date : ', project.onDate),
+            SizedBox(
+              height: 8,
+            ),
+            descriptionTile('Description : ', project.description),
+            SizedBox(
+              height: 8,
+            ),
+            descriptionTile('Published Date : ', project.publishedDate),
             SizedBox(height: 30),
             BlocConsumer<ProjectBloc, ProjectState>(
-              listener: (context, state) {
-                if (state is LoadingState) {
-                  isLoading = true;
-                  dialogMsg(context,'Please wait...');
-                }
-                else if (state is AppliedState) {
-                  isLoading = false;
-                  isApplied = true;
-                  Navigator.pop(context);
-                }
-
-                else if (state is CanceledState) {
-                  isLoading = false;
-                  isApplied = false;
-                  Navigator.pop(context);
-                }
-              },
-              builder: (context, state) => customActionButton(context, project)
-            )
+                listener: (context, state) {
+                  if (state is LoadingState) {
+                    isLoading = true;
+                    dialogMsg(context, 'Please wait...');
+                  } else if (state is AppliedState) {
+                    isLoading = false;
+                    isApplied = true;
+                    Navigator.pop(context);
+                  } else if (state is CanceledState) {
+                    isLoading = false;
+                    isApplied = false;
+                    Navigator.pop(context);
+                  }
+                },
+                builder: (context, state) =>
+                    customActionButton(context, project))
           ],
         ),
       ),
     );
   }
-
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/data_layer/models/project.dart';
 import 'package:forest_tracker/data_layer/roughData.dart';
+import 'package:forest_tracker/data_layer/services/auth_service.dart';
 import 'package:forest_tracker/data_layer/services/project_services.dart';
 import 'package:forest_tracker/logic_layer/blocs/project_bloc.dart';
 import 'package:forest_tracker/logic_layer/events/projects_event.dart';
@@ -10,14 +11,13 @@ import 'package:forest_tracker/logic_layer/states/projects_state.dart';
 
 class ProjectsBloc extends Bloc<ProjectsEvents, ProjectsStates> {
   final ProjectBloc projectBloc;
-  final ProjectAPI projectAPI;
 
   StreamSubscription streamSubscription;
 
   List<Project> allProjects = [];
   List<Project> appliedProjects = [];
 
-  ProjectsBloc({this.projectBloc, this.projectAPI}) : super(ProjectsLoading()) {
+  ProjectsBloc({this.projectBloc}) : super(ProjectsLoading()) {
     streamSubscription = projectBloc.stream.listen((projectState) {
       if(projectState is CanceledState){
         appliedProjects = allProjects.where((project)=>Project.appliedProjects.contains(project.projectID)).toList();
@@ -44,7 +44,7 @@ class ProjectsBloc extends Bloc<ProjectsEvents, ProjectsStates> {
     yield ProjectsLoading();
     await Future.delayed(Duration(milliseconds: 2000));
     try {
-      //allProjects = await projectAPI.getAllProjects();
+     // allProjects = await ProjectAPI.getAllProjects();
       allProjects = projects;
       yield ProjectsLoaded().copyWith(projects: allProjects);
     } catch (e) {
@@ -55,9 +55,12 @@ class ProjectsBloc extends Bloc<ProjectsEvents, ProjectsStates> {
   Stream<ProjectsStates> _viewProjectDetails(ProjectsEvents event) async* {
     yield ProjectLoading();
     try {
+      final token = await Authentication.getToken("token");
+      final String projectId = event.projectId.toString();
       await Future.delayed(Duration(milliseconds: 2000));
-      //Project project = await projectAPI.getProject(event.projectId);
-      Project project = allProjects[event.projectId - 1]; //until API connected
+      // Project project = await ProjectAPI.getProject(projectId, token);
+      // yield ProjectLoaded().copyWith(project: project, applied: project.isApplied);
+      Project project = allProjects[event.projectId - 1];
       if (Project.appliedProjects.contains(event.projectId)) {
         yield ProjectLoaded().copyWith(project: project, applied: true);
       } else
@@ -72,7 +75,9 @@ class ProjectsBloc extends Bloc<ProjectsEvents, ProjectsStates> {
   Stream<ProjectsStates> _getFavProjects(ProjectsEvents event) async*{
     yield FavProjectsLoading();
     try{
-      //List<Project> projects = await projectAPI.getFaveProjects();
+      // final token = await Authentication.getToken("token");
+      // final userId = await Authentication.getToken("id");
+      // List<Project> favProjects = await ProjectAPI.getFavProjects(userId, token);
       List<Project> favProjects = allProjects.where((project)=>Project.favProjects.contains(project.projectID)).toList();
       yield FavProjectsLoaded(projects: favProjects);
     }catch (e) {
@@ -84,7 +89,9 @@ class ProjectsBloc extends Bloc<ProjectsEvents, ProjectsStates> {
   Stream<ProjectsStates> _getAppliedProjects() async*{
     yield AppliedProjectsLoading();
     try{
-      //List<Project> projects = await projectAPI.getFaveProjects();
+      // final token = await Authentication.getToken("token");
+      // final userId = await Authentication.getToken("id");
+      // List<Project> appliedProjects = await ProjectAPI.getAppliedProjects(userId, token);
       appliedProjects = allProjects.where((project)=>Project.appliedProjects.contains(project.projectID)).toList();
       yield AppliedProjectsLoaded().copyWith(projects: appliedProjects);
     }catch (e) {

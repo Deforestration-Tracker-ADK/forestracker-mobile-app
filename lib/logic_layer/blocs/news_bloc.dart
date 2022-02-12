@@ -13,9 +13,6 @@ class NewsBloc extends Bloc<NewsEvent,NewsState>{
     if(event is LoadAllNews){
       yield* _getAllNews(event);
     }
-    else if(event is LoadArticle){
-      yield* _viewArticle(event);
-    }
   }
 
   Stream<NewsState> _getAllNews(NewsEvent event) async*{
@@ -26,13 +23,6 @@ class NewsBloc extends Bloc<NewsEvent,NewsState>{
     }
     catch(e){
       yield LoadingError(errorMsg: e.toString());
-    }
-  }
-
-  Stream<NewsState> _viewArticle(LoadArticle event) async*{
-    yield ArticleLoading();
-    if(event.article != null){
-      yield ArticleLoaded(article: event.article);
     }
   }
 

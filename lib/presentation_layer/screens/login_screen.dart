@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forest_tracker/logic_layer/Events/login_event.dart';
+import 'package:forest_tracker/logic_layer/events/login_event.dart';
 import 'package:forest_tracker/logic_layer/blocs/login_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/navigation_cubit.dart';
 import 'package:forest_tracker/logic_layer/states/login_states.dart';
@@ -62,15 +62,13 @@ class LoginScreen extends StatelessWidget {
                       builder: (context, state) {
                         if (state is InitialState|| state is LogoutState ||state is LoginWithInvalidCredentials) {
                           return loginForm(context);
-                        } else if (state is LoginCredentialLoading) {
-                          return Center(child: CircularProgressIndicator());
                         } else if (state is LoginWithCorrectCredentials) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {//used to return circular progress indicator until the frame build
                             BlocProvider.of<NavigationCubit>(context).navigate(0);
                             Navigator.pushReplacementNamed(context, MainPage.id);});
                           return Center(child: CircularProgressIndicator());
                         }else {
-                          throw ('undefined state');
+                          return Center(child: CircularProgressIndicator());
                         }
                       }),
                 ],

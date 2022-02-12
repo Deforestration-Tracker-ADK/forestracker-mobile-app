@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/data_layer/services/auth_service.dart';
-import 'package:forest_tracker/logic_layer/Events/login_event.dart';
+import 'package:forest_tracker/logic_layer/events/login_event.dart';
 import 'package:forest_tracker/logic_layer/blocs/login_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

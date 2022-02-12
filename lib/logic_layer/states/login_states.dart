@@ -26,11 +26,10 @@ class LoginCredentialLoading extends LoginStates{}
 
 
 class LoginWithCorrectCredentials extends LoginStates{
-  final User user;
-  LoginWithCorrectCredentials({@required this.user});
+  LoginWithCorrectCredentials();
 
   @override
-  List<User> get props => [user];
+  List<User> get props => [];
 }
 
 

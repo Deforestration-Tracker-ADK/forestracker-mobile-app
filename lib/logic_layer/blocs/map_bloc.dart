@@ -21,8 +21,13 @@ class MapBloc extends Bloc<MapEvents,MapStates>{
   }
 
   Stream<MapStates> _getCurrentLocation() async*{
-    Location location = await geoLocator.getCurrentLocation();
-    yield CurrentLocation(location: location);
+    try{
+      Location location = await geoLocator.getCurrentLocation();
+      yield CurrentLocation(location: location);
+    }
+    catch(e){
+      yield MapError(error : e.toString());
+    }
   }
 
   Stream<MapStates> _getSearchedLocation(SelectPlace event) async*{

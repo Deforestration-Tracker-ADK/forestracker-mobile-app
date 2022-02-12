@@ -12,7 +12,6 @@ import 'package:forest_tracker/logic_layer/blocs/reports_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/connection_cubit.dart';
 import 'package:forest_tracker/logic_layer/cubits/location_appbar_cubit.dart';
 import 'package:forest_tracker/logic_layer/cubits/navigation_cubit.dart';
-import 'package:forest_tracker/presentation_layer/pages/article_page.dart';
 import 'package:forest_tracker/presentation_layer/pages/report_creation/report_creation_page.dart';
 import 'package:forest_tracker/presentation_layer/pages/send_reports_page.dart';
 import 'package:forest_tracker/presentation_layer/pages/applied_projects_page.dart';
@@ -44,7 +43,6 @@ class ForestTracker extends StatefulWidget {
 }
 
 class _ForestTrackerState extends State<ForestTracker> {
-  final ProjectAPI projectAPI = ProjectAPI.getInstance();
   final NewsAPI newsAPI = NewsAPI();
   final GeoLocator geoLocator = GeoLocator();
   final SearchPlaces searchPlace = SearchPlaces();
@@ -67,8 +65,8 @@ class _ForestTrackerState extends State<ForestTracker> {
         BlocProvider<NavigationCubit>(create: (context) => NavigationCubit()),
         BlocProvider<LocationAppBarCubit>(create: (context) => LocationAppBarCubit()),
         BlocProvider<NewsBloc>(create: (context) => NewsBloc(newsAPI: newsAPI)),
-        BlocProvider<ProjectBloc>(create: (create)=>ProjectBloc(projectAPI: projectAPI)),
-        BlocProvider<ProjectsBloc>(create: (context) => ProjectsBloc(projectAPI:projectAPI,projectBloc: context.read<ProjectBloc>())),
+        BlocProvider<ProjectBloc>(create: (create)=>ProjectBloc()),
+        BlocProvider<ProjectsBloc>(create: (context) => ProjectsBloc(projectBloc: context.read<ProjectBloc>())),
         BlocProvider<MapBloc>(create: (context)=>MapBloc(geoLocator:geoLocator ,searchPlaces: searchPlace)),
         BlocProvider<SelectLocationCubit>(create: (context) => SelectLocationCubit(searchPlaces: searchPlace)),
         BlocProvider<ReportsBloc>(create: (context)=> ReportsBloc(),),
@@ -94,7 +92,6 @@ class _ForestTrackerState extends State<ForestTracker> {
           WelcomeScreen.id: (context) => WelcomeScreen(),
           LoginScreen.id: (context) => LoginScreen(),
           MainPage.id: (context) => MainPage(),
-          ViewArticle.id : (context) => ViewArticle(),
           ProjectPage.id : (context) => ProjectPage(),
           ReportPage.id :(context)=> ReportPage(),
           FavProjectScreen.id : (context) => FavProjectScreen(),

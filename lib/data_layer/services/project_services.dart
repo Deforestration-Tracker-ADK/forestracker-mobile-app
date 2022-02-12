@@ -1,104 +1,119 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:forest_tracker/data_layer/models/project.dart';
-import 'package:forest_tracker/data_layer/services/auth_service.dart';
-import 'package:http/http.dart' as http;
+
+import '../Constants.dart';
 
 class ProjectAPI{
-  static ProjectAPI _instance;
-  int projectId;
-  String projectName;
-  var jsonResponse ;
-  var url ;
-  var response;
 
-  //private constructor
-  ProjectAPI._();
+  static Future getAllProjects({@required String token}) async{
+    var dio = Dio();
 
-  static getInstance(){
-    if(_instance == null){
-      _instance = ProjectAPI._();
-    }
-    return _instance;
-  }
-  Future getAllProjects() async{
-    this.url= Uri.parse('API');
-    this.response = await http.get(this.url);
-    if(this.response.statusCode==200){
-      this.jsonResponse = json.decode(response.body);
-      if(this.jsonResponse !=null){
-        List<Project> projects = jsonResponse.map((dynamic data) => Project.fromJson(data)).toList();
-        return projects;
-      }
-      else{
-        throw('No Projects;');
-      }
-    }
-    else{
-      throw('Status code error');
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.get(URLS.getAllProjectsUrl);
+      return response.data.map((data)=>Project.fromJson(data)).toList();
+    } on DioError catch (e) {
+      return e.response.data['detail'].toString();
     }
 
   }
 
-  Future getProject(int projectId) async{
-    this.projectId = projectId;
-    this.url= Uri.parse('API');
-    this.response = await http.get(this.url,headers: {'projectID':projectId.toString(),'userID': Authentication.getToken('userID')});
-    if(this.response.statusCode==200){
-      this.jsonResponse = json.decode(response.body);
-      if(this.jsonResponse !=null){
-        Project project = Project.fromJson(jsonResponse);
-        return project;
-      }
-      else{
-        throw('Project loading error;');
-      }
-    }
-    else{
-      throw('Status code error');
+  static Future getProject(String projectId,String token) async{
+
+    var dio = Dio();
+
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.get(URLS.getProjectUrl+projectId);
+      return Project.fromJson(response.data);
+    } on DioError catch (e) {
+      return e.response.data['detail'].toString();
     }
   }
 
-  Future applyProject(int projectId,String userId) async{
-    this.projectId = projectId;
-    this.url = Uri.parse('API');
-    Map body = {'projectId' : projectId,'userId':userId};
-    this.response = await http.post(url,body:body );
-    if(this.response.statusCode==200){
-      this.jsonResponse = json.decode(response.body);
-      if(this.jsonResponse !=null){
-        return this.jsonResponse;
-      }
-      else{
-        throw('Project Applying failed');
-      }
-    }
-    else{
-      throw('Status code error');
+  static Future applyProject(String projectId,String userId,String token) async{
+    var dio = Dio();
+
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.post(URLS.applyProjectUrl,data:{
+        "volunteer_id": userId,
+        "opportunity_id": projectId
+      });
+      return response.statusCode.toString();
+    } on DioError catch (e) {
+      return e.response.data['detail'].toString();
     }
   }
 
-  Future cancelProject(int projectId,String userId) async{
-    this.projectId = projectId;
-    this.url = Uri.parse('API');
-    Map body = {'projectId' : projectId,'userId':userId};
-    this.response = await http.post(url,body:body );
-    if(this.response.statusCode==200){
-      this.jsonResponse = json.decode(response.body);
-      if(this.jsonResponse !=null){
-        return this.jsonResponse;
-      }
-      else{
-        throw('Project Cancellation failed');
-      }
-    }
-    else{
-      throw('Status code error');
+  static Future cancelProject(String projectId,String userId,String token) async{
+    var dio = Dio();
+
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.post(URLS.applyProjectUrl,data:{
+        "volunteer_id": userId,
+        "opportunity_id": projectId
+      });
+      return response.statusCode.toString();
+    } on DioError catch (e) {
+      return e.response.data['detail'].toString();
     }
   }
 
-  Future makeProjectFave(int projectId)async {}
+  static Future makeProjectFave(String projectId,String userId,String token) async{
+    var dio = Dio();
 
-  Future removeFaveProject(int projectId)async {}
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.post(URLS.makeFavProjectUrl,data:{
+        "volunteer_id": userId,
+        "opportunity_id": projectId,
+        "isFavourite" : "true"
+      });
+      return response.statusCode.toString();
+    } on DioError catch (e) {
+      return e.response.data['detail'].toString();
+    }
+  }
 
-  Future getFaveProjects()async {}
+  static Future removeFaveProject(String projectId,String userId,String token) async{
+    var dio = Dio();
+
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.post(URLS.makeFavProjectUrl,data:{
+        "volunteer_id": userId,
+        "opportunity_id": projectId,
+        "isFavourite" : "false"
+      });
+      return response.statusCode.toString();
+    } on DioError catch (e) {
+      return e.response.data['detail'].toString();
+    }
+  }
+
+  static Future getFavProjects(String userId,String token)async {
+    var dio = Dio();
+
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.get(URLS.getAllFavProjectsUrl+userId);
+      return response.data.map((data)=>Project.fromJson(data)).toList();
+    } on DioError catch (e) {
+      return e.response.data['detail'].toString();
+    }
+  }
+  static Future getAppliedProjects(String userId,String token)async {
+    var dio = Dio();
+
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.get(URLS.getAllAppliedProjectsUrl+userId);
+      return response.data.map((data)=>Project.fromJson(data)).toList();
+    } on DioError catch (e) {
+      return e.response.data['detail'].toString();
+    }
+  }
 }

@@ -6,9 +6,16 @@ import 'package:http/http.dart' as http;
 
 class GeoLocator{
 
-  Future<Location> getCurrentLocation() async{
-     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-     return Location().copyWith(longitude: position.longitude,latitude: position.latitude);
+  Future getCurrentLocation() async{
+    try{
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      return Location()
+          .copyWith(longitude: position.longitude, latitude: position.latitude);
+    }
+    catch(e){
+      return e["details"].toString();
+    }
   }
 
 }
@@ -33,6 +40,9 @@ class SearchPlaces{
       var jsonData = json.decode(response.body);
       var data = jsonData['result'] as Map<String,dynamic>;
       return SearchedPlace.fromJson(data);
+    }
+    else{
+      throw("Bad Status");
     }
   }
 

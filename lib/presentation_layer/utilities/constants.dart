@@ -22,6 +22,10 @@ class Constant{
   static const SEND_REPORT_LOADING = "Report Sending..!!!";
   static const DRAFT_REPORT_LOADING = "Draft Saving..!!!";
 
+  static const SL_SOUTH_WEST_LAT = 6.076595283225367;
+  static const SL_SOUTH_WEST_LON =79.71957731992006;
+  static const SL_NORTH_EAST_LAT = 9.895619401416534;
+  static const SL_NORTH_EAST_LONG = 81.68206952512264;
 }
 
 

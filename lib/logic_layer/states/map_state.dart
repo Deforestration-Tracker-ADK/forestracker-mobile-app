@@ -45,3 +45,11 @@ class SelectedPlace extends MapStates{
   List<Location> get props => [location];
 }
 
+class MapError extends MapStates{
+  final String error;
+  MapError({this.error});
+  @override
+  List<Object> get props => [error];
+
+}
+

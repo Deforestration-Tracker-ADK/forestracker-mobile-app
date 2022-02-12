@@ -95,7 +95,8 @@ class MainPage extends StatelessWidget {
               items: [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.search_sharp), label: "search"),
+                  // TODO: change the icon
+                    icon: Icon(Icons.eleven_mp), label: "search"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.location_on_rounded), label: "location"),
                 BottomNavigationBarItem(

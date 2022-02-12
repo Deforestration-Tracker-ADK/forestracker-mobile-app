@@ -1,4 +1,5 @@
 import 'package:expandable/expandable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forest_tracker/data_layer/models/article.dart';
 import 'package:forest_tracker/data_layer/models/project.dart';
@@ -51,11 +52,15 @@ Widget customNewsTile(Article article, BuildContext context) => Column(
 
 // ),
 
-Widget customCard(Widget child, {double border = 16,Color shadowColor=Colors.green,Color color =Colors.greenAccent}) => Card(
+Widget customCard(Widget child,
+        {double border = 16,
+        Color shadowColor = Colors.green,
+        Color color = Colors.greenAccent}) =>
+    Card(
       elevation: 5,
-      shadowColor:shadowColor ,
+      shadowColor: shadowColor,
       margin: EdgeInsets.all(10.0),
-      color:color ,
+      color: color,
       shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(border)),
       child: child,
@@ -200,13 +205,19 @@ Widget customProjectTile(Project project, Function onPressed,
   );
 }
 
-Widget customReportTile({int index,Report report, Function onEdit,Function onDelete,Animation<double> animation,String buttonText}) {
+Widget customReportTile(
+    {int index,
+    Report report,
+    Function onEdit,
+    Function onDelete,
+    Animation<double> animation,
+    String buttonText}) {
   Widget deleteIcon = IconButton(
     icon: Icon(
       Icons.delete,
       color: Colors.red,
     ),
-    onPressed: () => onDelete(report,index),
+    onPressed: () => onDelete(report, index),
   );
   return FadeTransition(
     opacity: animation,
@@ -258,7 +269,6 @@ Widget customReportTile({int index,Report report, Function onEdit,Function onDel
   );
 }
 
-
 ListTile descriptionTile(String term1, String term2) {
   return ListTile(
       visualDensity: VisualDensity(vertical: -4),
@@ -279,13 +289,13 @@ ListTile descriptionTile(String term1, String term2) {
 }
 
 Future<Widget> dialogMsg(BuildContext context, String text,
-    {isNotify = false,fontSize =14}) {
+    {isNotify = false, fontSize = 14}) {
   return showDialog(
     context: context,
     barrierDismissible: false,
     builder: (_) {
-      if(isNotify == true){
-        Future.delayed(Duration(seconds: 2), () {
+      if (isNotify == true) {
+        Future.delayed(Duration(milliseconds: 1500), () {
           Navigator.of(context).pop();
         });
       }
@@ -293,14 +303,49 @@ Future<Widget> dialogMsg(BuildContext context, String text,
         title: Text(
           text,
           style: TextStyle(
-            color: isNotify? Colors.red:Colors.black,
-            fontSize: 14
-          ),
+              color: isNotify ? Colors.red : Colors.black, fontSize: 14),
         ),
-        content: isNotify?null:Center(child: CircularProgressIndicator()),
+        content: isNotify ? null : Center(child: CircularProgressIndicator()),
         elevation: 3,
         scrollable: true,
         actionsAlignment: MainAxisAlignment.center,
+      );
+    },
+  );
+}
+
+Future<Widget> errorPopUp(BuildContext context, Function onPressed,{String msg}) {
+  return showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (_) {
+      //to avoid dismissing pop up using back button
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          backgroundColor: Colors.redAccent,
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text("Oops..!!!",
+                  style: TextStyle(fontSize: 40, color: Colors.black)),
+              Text(
+                msg??"Something Went Wrong",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic),
+              ),
+            ],
+          ),
+          content: Image.asset('assets/images/error.png'),
+          elevation: 30,
+          actions: [
+            Center(child: IconButton(onPressed:onPressed, icon: const Icon(Icons.refresh_rounded),iconSize: 50,)),
+          ],
+        ),
       );
     },
   );

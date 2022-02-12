@@ -49,19 +49,6 @@ class SendReportsLoaded extends ReportsState{
 }
 
 
-// class ProjectLoaded extends ReportsStates{
-//   Project project;
-//   bool applied;
-//   ProjectLoaded({this.project,this.applied});
-//
-//   ProjectLoaded copyWith({Project project,bool applied}){
-//     return ProjectLoaded(
-//         project: project??this.project,
-//         applied: applied??this.applied
-//     );
-//   }
-// }
-
 class ReportsErrors extends ReportsState{
   final String error;
   ReportsErrors({this.error});

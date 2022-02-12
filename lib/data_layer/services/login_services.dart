@@ -1,32 +1,33 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'auth_service.dart';
+import '../Constants.dart';
 
 class LoginAPI{
-  final String email;
-  final String password;
-  var jsonResponse;
-  Map data;
-  final url = Uri.parse('API');
+  static Future<dynamic> getUser({@required String email, @required String password}) async {
+    var dio = Dio();
 
-  LoginAPI({@required this.email, @required this.password}){
-    data = {'email': this.email, 'password': this.password};
+    //dio throws an error if response is not 201
+    try {
+      var response = await dio.post(URLS.userLoginUrl, data: {
+        'email': email,
+        'password': password,
+        'user_type': "VOL",
+      });
+      return {'data': response.data};
+    } on DioError catch (e) {
+      return {'error': e.message[0].toString()};
+    }
   }
 
-
-  Future getUser() async {
-    var response = await http.post(this.url, body: this.data);
-    if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
-      if (jsonResponse != null) {
-        Authentication.setToken("token", jsonResponse['token']);
-        Authentication.setToken("userID", jsonResponse['userID']);
-        return jsonResponse;
-      }
-      else{
-        throw('undefined user');
-      }
+  static Future<String> logInCheck({@required String id,@required token}) async {
+    var dio = Dio();
+    try {
+      dio.options.headers['Authorization'] = 'Token ' + token;
+      var response = await dio.get(URLS.userLoginCheckUrl+id);
+      return response.statusCode.toString();
+    } on DioError catch (e) {
+      print(e.response.data);
+      return e.response.data['detail'].toString();
     }
   }
 }

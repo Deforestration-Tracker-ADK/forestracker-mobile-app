@@ -69,12 +69,25 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
           )
         ],
       ),
-      body: BlocBuilder<ReportsBloc, ReportsState>(
+      body: BlocConsumer<ReportsBloc, ReportsState>(
+        listenWhen: (prev,current){
+          if(current is ReportsErrors){
+            return true;
+          }return false;
+        },
+        listener: (context,state){
+          if(state is ReportsErrors){
+            errorPopUp(
+                context,
+                    (){context.read<ReportsBloc>().add(LoadDraftReports());Navigator.pop(context);},
+                msg: state.error
+            );
+          }
+        },
         // ignore: missing_return
         buildWhen: (prevState, state) {
           if (state is ReportsLoading ||
-              state is ReportsLoaded ||
-              state is ReportsErrors) {
+              state is ReportsLoaded ) {
             return true;
           }
           return false;

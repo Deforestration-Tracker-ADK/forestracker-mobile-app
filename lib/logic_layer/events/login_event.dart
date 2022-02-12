@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:forest_tracker/presentation_layer/utilities/validation.dart';
 
-abstract class LoginEvents{}
+abstract class LoginEvents extends Equatable{}
 
 class GetUser extends LoginEvents{
   final String email;
@@ -14,6 +15,17 @@ class GetUser extends LoginEvents{
     this.validPassword = validatePassword(this.password);
   }
 
+  @override
+  List<Object> get props => [email,password];
+
 }
 
-class LogoutUser extends LoginEvents{}
+class LoginCheck extends LoginEvents{
+  @override
+  List<Object> get props => [];
+}
+
+class LogoutUser extends LoginEvents{
+  @override
+  List<Object> get props => [];
+}

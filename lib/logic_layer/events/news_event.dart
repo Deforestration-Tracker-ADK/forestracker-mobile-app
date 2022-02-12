@@ -8,12 +8,3 @@ class LoadAllNews extends NewsEvent{
   @override
   List<Object> get props => [];
 }
-
-class LoadArticle extends NewsEvent{
-  final Article article;
-
-  LoadArticle({this.article});
-
-  @override
-  List<Article> get props => [article];
-}

@@ -14,6 +14,8 @@ import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/location_appbar_states.dart';
 import 'package:forest_tracker/logic_layer/states/map_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/report_creation/report_creation_page.dart';
+import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
+import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPage extends StatefulWidget {
@@ -112,6 +114,13 @@ class _MapPageState extends State<MapPage> {
           if (state is SelectedPlace) {
             _updateLocation(state.location);
           }
+          if (state is MapError) {
+            errorPopUp(
+                    context,
+                    (){context.read<MapBloc>().add(GetCurrentLocation());Navigator.pop(context);},
+                    msg: state.error
+                    );
+          }
         },
         buildWhen: (prevState, state) {
           if (state is MapLoading ||
@@ -138,6 +147,9 @@ class _MapPageState extends State<MapPage> {
                   zoomControlsEnabled: false,
                   minMaxZoomPreference: MinMaxZoomPreference(2, 20),
                   initialCameraPosition: setInitialCameraPosition(state),
+                  cameraTargetBounds: CameraTargetBounds(
+                    LatLngBounds(southwest: LatLng(Constant.SL_SOUTH_WEST_LAT,Constant.SL_SOUTH_WEST_LON), northeast: LatLng(Constant.SL_NORTH_EAST_LAT,Constant.SL_SOUTH_WEST_LON))
+                  ),
                 ),
               ),
               Positioned(

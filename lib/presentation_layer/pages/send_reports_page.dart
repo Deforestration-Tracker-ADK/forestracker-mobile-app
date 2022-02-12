@@ -36,12 +36,25 @@ class SendReportPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Send Reports'),
       ),
-      body: BlocBuilder<ReportsBloc, ReportsState>(
+      body: BlocConsumer<ReportsBloc, ReportsState>(
+        listenWhen: (prev,current){
+          if(current is SendReportsErrors){
+            return true;
+          }return false;
+        },
+        listener: (context,state){
+          if(state is SendReportsErrors){
+            errorPopUp(
+                context,
+                    (){context.read<ReportsBloc>().add(LoadSendReports());Navigator.pop(context);},
+                msg: state.error
+            );
+          }
+        },
         // ignore: missing_return
         buildWhen: (prevState, state) {
           if (state is SendReportsLoading ||
-              state is SendReportsLoaded ||
-              state is SendReportsErrors) {
+              state is SendReportsLoaded) {
             return true;
           }
           return false;
