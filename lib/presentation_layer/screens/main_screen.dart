@@ -38,7 +38,6 @@ class MainPage extends StatelessWidget {
       child: Scaffold(
           body: BlocListener<ConnectionCubit, ConnectionStates>(
             listener: (context, state) => {
-            print(state),
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (state is Connected) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -85,6 +84,7 @@ class MainPage extends StatelessWidget {
           bottomNavigationBar: BlocBuilder<NavigationCubit, NavigationStates>(
               builder: (context, state) {
             return BottomNavigationBar(
+              key: Key("Bottom_nav"),
               elevation: 2.0,
               backgroundColor: Colors.white10,
               selectedItemColor: Colors.blue,
@@ -93,13 +93,13 @@ class MainPage extends StatelessWidget {
               onTap: (value) => changePage(value, context),
               currentIndex: state.index,
               items: [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.event_note), label: "search"),
+                    icon: Icon(Icons.event_note), label: "Projects"),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.location_on_rounded), label: "location"),
+                    icon: Icon(Icons.location_on_rounded), label: "Location"),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.folder_rounded), label: "folder"),
+                    icon: Icon(Icons.folder_rounded), label: "Report"),
               ],
             );
           })),

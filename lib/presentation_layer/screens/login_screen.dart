@@ -92,6 +92,7 @@ class LoginScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
+              key: Key("name"),
               keyboardType: TextInputType.emailAddress,
               textAlign: TextAlign.center,
               validator: (value) => validateUsername(value),
@@ -105,6 +106,7 @@ class LoginScreen extends StatelessWidget {
               height: 8.0,
             ),
             TextFormField(
+              key: Key("password"),
               obscureText: true,
               textAlign: TextAlign.center,
               validator: (value) => validatePassword(value),
@@ -127,7 +129,7 @@ class LoginScreen extends StatelessWidget {
                 showSpinner = true;
                 try {
                   final bloc = BlocProvider.of<LoginBloc>(context);
-                  bloc.add(GetUser(email: email, password: password));
+                  bloc.add(GetUser(username: email, password: password));
                   showSpinner = false;
                 } catch (e) {
                   print(e);
@@ -138,6 +140,7 @@ class LoginScreen extends StatelessWidget {
               height: 24.0,
             ),
             Center(
+              key: Key("forget_pw"),
               child: new InkWell(
                   child: new Text('Forget Password'),
                   onTap: () => launch(
