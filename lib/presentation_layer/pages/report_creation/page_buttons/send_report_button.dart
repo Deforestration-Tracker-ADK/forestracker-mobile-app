@@ -35,10 +35,17 @@ class SendReportButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ReportBloc, ReportState>(
       listener: (context, state) async {
+        if(state is Error){
+          Navigator.pop(context);
+          errorPopUp(
+              context,
+                  (){Navigator.pop(context);}
+          );
+        }
         if (state is ReportSend) {
           //to pop up notification
           Navigator.pop(context);
-          await dialogMsg(context, "Report Sent..!!",isNotify: true);
+          await dialogMsg(context, "Report Sent..!!",isNotify: true,textColor: Colors.black);
           //to pop up report page
           Navigator.pop(context);
           context.read<ReportsBloc>().add(LoadDraftReports());

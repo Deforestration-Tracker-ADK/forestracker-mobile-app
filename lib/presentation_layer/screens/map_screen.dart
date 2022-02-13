@@ -147,9 +147,6 @@ class _MapPageState extends State<MapPage> {
                   zoomControlsEnabled: false,
                   minMaxZoomPreference: MinMaxZoomPreference(2, 20),
                   initialCameraPosition: setInitialCameraPosition(state),
-                  cameraTargetBounds: CameraTargetBounds(
-                    LatLngBounds(southwest: LatLng(Constant.SL_SOUTH_WEST_LAT,Constant.SL_SOUTH_WEST_LON), northeast: LatLng(Constant.SL_NORTH_EAST_LAT,Constant.SL_SOUTH_WEST_LON))
-                  ),
                 ),
               ),
               Positioned(

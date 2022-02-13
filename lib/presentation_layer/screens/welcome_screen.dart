@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forest_tracker/data_layer/services/auth_service.dart';
 import 'package:forest_tracker/logic_layer/blocs/login_bloc.dart';
 import 'package:forest_tracker/logic_layer/events/login_event.dart';
 import 'package:forest_tracker/logic_layer/states/login_states.dart';

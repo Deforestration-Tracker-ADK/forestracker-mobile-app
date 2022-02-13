@@ -33,6 +33,9 @@ class SaveDraftButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ReportBloc,ReportState>(
+        listenWhen: (prev,current){
+          if(current is Error){return false;}return true;
+        },
         listener:(context,state) async {
           if(state is PendingReport){
             dialogMsg(context, state.message);
@@ -40,8 +43,8 @@ class SaveDraftButton extends StatelessWidget {
           else if(state is DraftSaved){
             //to pop up notification
             Navigator.pop(context);
-            Navigator.pop(context);
-            await dialogMsg(context, "Draft Saved..!!",isNotify: true);
+
+            await dialogMsg(context, "Draft Saved..!!",isNotify: true,textColor: Colors.black);
             //to pop up report page
             Navigator.pop(context);
             context.read<ReportsBloc>().add(LoadDraftReports());

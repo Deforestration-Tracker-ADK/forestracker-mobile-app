@@ -289,7 +289,7 @@ ListTile descriptionTile(String term1, String term2) {
 }
 
 Future<Widget> dialogMsg(BuildContext context, String text,
-    {isNotify = false, fontSize = 14}) {
+    {isNotify = false, fontSize = 14,Color textColor}) {
   return showDialog(
     context: context,
     barrierDismissible: false,
@@ -300,10 +300,12 @@ Future<Widget> dialogMsg(BuildContext context, String text,
         });
       }
       return AlertDialog(
-        title: Text(
-          text,
-          style: TextStyle(
-              color: isNotify ? Colors.red : Colors.black, fontSize: 14),
+        title: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+                color: isNotify ? textColor??Colors.red : Colors.black, fontSize: 14),
+          ),
         ),
         content: isNotify ? null : Center(child: CircularProgressIndicator()),
         elevation: 3,
