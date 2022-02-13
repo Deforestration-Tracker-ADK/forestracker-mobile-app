@@ -58,7 +58,7 @@ class ProjectsBloc extends Bloc<ProjectsEvents, ProjectsStates> {
       final token = await Authentication.getToken("token");
       final String projectId = event.projectId.toString();
       await Future.delayed(Duration(milliseconds: 2000));
-      // Project project = await ProjectAPI.getProject(projectId, token);
+      // Project project = await ProjectAPI.getProject(projectId.toString(), token.toString());
       // yield ProjectLoaded().copyWith(project: project, applied: project.isApplied);
       Project project = allProjects[event.projectId - 1];
       if (Project.appliedProjects.contains(event.projectId)) {
@@ -77,7 +77,7 @@ class ProjectsBloc extends Bloc<ProjectsEvents, ProjectsStates> {
     try{
       // final token = await Authentication.getToken("token");
       // final userId = await Authentication.getToken("id");
-      // List<Project> favProjects = await ProjectAPI.getFavProjects(userId, token);
+      // List<Project> favProjects = await ProjectAPI.getFavProjects(userId.toString(), token.toString());
       List<Project> favProjects = allProjects.where((project)=>Project.favProjects.contains(project.projectID)).toList();
       yield FavProjectsLoaded(projects: favProjects);
     }catch (e) {
@@ -91,7 +91,7 @@ class ProjectsBloc extends Bloc<ProjectsEvents, ProjectsStates> {
     try{
       // final token = await Authentication.getToken("token");
       // final userId = await Authentication.getToken("id");
-      // List<Project> appliedProjects = await ProjectAPI.getAppliedProjects(userId, token);
+      // List<Project> appliedProjects = await ProjectAPI.getAppliedProjects(userId.toString(), token.toString());
       appliedProjects = allProjects.where((project)=>Project.appliedProjects.contains(project.projectID)).toList();
       yield AppliedProjectsLoaded().copyWith(projects: appliedProjects);
     }catch (e) {

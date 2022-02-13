@@ -67,7 +67,7 @@ class MainPage extends StatelessWidget {
                         return WillPopScope(
                           onWillPop: () async => false,
                           child: AlertDialog(
-                            content: Expanded(child: Image.asset('assets/images/no_connection.png')),
+                            content: Image.asset('assets/images/no_connection.png'),
                             elevation: 30,
                           ),
                         );
@@ -96,7 +96,7 @@ class MainPage extends StatelessWidget {
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
                 BottomNavigationBarItem(
                   // TODO: change the icon
-                    icon: Icon(Icons.eleven_mp), label: "search"),
+                    icon: Icon(Icons.eleven_mp), label: "project"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.location_on_rounded), label: "location"),
                 BottomNavigationBarItem(

@@ -47,10 +47,10 @@ class ReportAPI {
 
     try {
       dio.options.headers['Authorization'] = 'Token ' + token;
-      var response = await dio.get(URLS.getAllSendReportsUrl+userId);
+      var response = await dio.get(URLS.getAllSendReportsUrl+ userId);
       return response.data.map((data)=>Report.fromJson(data)).toList();
     } on DioError catch (e) {
-      return e.response.data['detail'].toString();
+      return e.toString();
     }
 
   }
@@ -64,7 +64,7 @@ class ReportAPI {
       var response = await dio.get(URLS.getSendReportUrl+reportId);
       return Report.fromJson(response.data);
     } on DioError catch (e) {
-      return e.response.data['detail'].toString();
+      return e.toString();
     }
   }
 
@@ -77,7 +77,7 @@ class ReportAPI {
       var response = await dio.post(URLS.createReportUrl,data: report.toJson());
       return response.statusCode.toString();
     } on DioError catch (e) {
-      return e.response.data['detail'].toString();
+      return e.toString();
     }
   }
 

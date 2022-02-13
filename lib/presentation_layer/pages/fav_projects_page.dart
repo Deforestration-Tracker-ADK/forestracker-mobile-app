@@ -35,7 +35,20 @@ class _FavProjectScreenState extends State<FavProjectScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Fav Projects'),),
-      body: BlocBuilder<ProjectsBloc, ProjectsStates>(
+      body: BlocConsumer<ProjectsBloc, ProjectsStates>(
+        listenWhen: (prev,current){
+          if(current is ProjectErrors){
+            return true;
+          }return false;
+        },
+          listener: (context,state){
+          if(state is ProjectErrors){
+            errorPopUp(
+                context,
+                    (){ BlocProvider.of<ProjectsBloc>(context).add(GetAllFavProjects());Navigator.pop(context);}
+            );
+          }
+          },
         buildWhen: (prevState,state){
           if(state is FavProjectsLoading || state is FavProjectsLoaded || state is ProjectErrors ){
             return true;

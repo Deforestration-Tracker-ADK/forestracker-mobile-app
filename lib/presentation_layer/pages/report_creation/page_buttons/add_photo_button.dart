@@ -54,8 +54,10 @@ class AddPhotosButton extends StatelessWidget {
                       )),
                   Spacer(),
                   IconButton(
-                      onPressed: () =>
-                          getImageFiles(ImageSource.gallery, context),
+                      onPressed: () {
+                        getImageFiles(ImageSource.gallery, context);
+                        Navigator.pop(context);
+                      },
                       icon: Icon(Icons.photo, size: 50))
                 ],
               ),
@@ -87,7 +89,7 @@ class AddPhotosButton extends StatelessWidget {
           builder:(context,state){
           var len = context.read<ReportBloc>().report.getImages().length;
           if (len==0){
-            return Text("No Images Selected!!");
+            return Text("No Images Selected!!",textAlign: TextAlign.center,);
           }
           else {
             return Container(

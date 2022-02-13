@@ -58,7 +58,7 @@ class _ProjectPageState extends State<ProjectPage> {
               errorPopUp(context, () {
                 Navigator.pop(context);
                 Navigator.pop(context);
-              }, msg: state.error);
+              },);
             }
           },
           buildWhen: (prevState, state) {
@@ -76,7 +76,6 @@ class _ProjectPageState extends State<ProjectPage> {
                   padding: EdgeInsets.all(5),
                   child: customCard(builderPage(project), border: 10));
             } else {
-              print(state);
               throw ('error');
             }
           },

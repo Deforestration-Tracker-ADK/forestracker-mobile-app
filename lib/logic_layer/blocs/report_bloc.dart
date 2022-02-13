@@ -5,7 +5,6 @@ import 'package:forest_tracker/data_layer/services/auth_service.dart';
 import 'package:forest_tracker/data_layer/services/report_services.dart';
 import 'package:forest_tracker/logic_layer/events/report_event.dart';
 import 'package:forest_tracker/logic_layer/states/report_state.dart';
-import 'package:forest_tracker/logic_layer/states/reports_state.dart';
 import 'package:forest_tracker/presentation_layer/pages/report_creation/report_creation_page.dart';
 import 'package:forest_tracker/presentation_layer/utilities/constants.dart';
 
@@ -60,13 +59,9 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }
 
   Stream<ReportState> _radioOption(RadioButtonEvent event) async* {
-    try {
       yield TapedLoading();
       this.report.radioValue = event.value.toString();
       yield TappedChoice(value: event.value);
-    } catch (e) {
-      yield Error(error: e.toString());
-    }
   }
 
   Stream<ReportState> _multiChoice(MultiChoiceEvent event) async* {
@@ -76,7 +71,6 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }
 
   Stream<ReportState> _selectImages(SelectImagesEvent event) async* {
-    try {
       yield ImageLoading();
       report.addImages(event.images);
 
@@ -86,19 +80,14 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       } else {
         yield SelectImages(report.getImages());
       }
-    } catch (e) {
-      yield Error(error: e.toString());
-    }
   }
 
   Stream<ReportState> _deleteImages(DeleteImageEvent event) async* {
-    try {
+
       yield ImageLoading();
       report.deleteImage(event.imageId);
       yield DeleteImage(report.getImages());
-    } catch (e) {
-      yield Error(error: e.toString());
-    }
+
   }
 
   Stream<ReportState> _removeImages(RemoveImagesEvent event) async* {

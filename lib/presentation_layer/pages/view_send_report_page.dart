@@ -181,6 +181,7 @@ class ReportReviewPage extends StatelessWidget {
       leading: Radio<int>(
               groupValue: int.parse(report.radioValue) ,
               value: value,
+              onChanged: null,
             )
 
       );
@@ -194,6 +195,7 @@ class ReportReviewPage extends StatelessWidget {
       contentPadding: EdgeInsets.only(left: 5, top: 5),
       leading: Checkbox(
           value: value,
+          onChanged: null,
           ),
       title: Text(option),
     );

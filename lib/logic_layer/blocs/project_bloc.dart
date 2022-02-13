@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forest_tracker/data_layer/models/project.dart';
-import 'package:forest_tracker/data_layer/services/auth_service.dart';
-import 'package:forest_tracker/data_layer/services/project_services.dart';
 import 'package:forest_tracker/logic_layer/events/project_event.dart';
 import 'package:forest_tracker/logic_layer/states/project_state.dart';
 
@@ -82,7 +80,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     //   final token = await Authentication.getToken("token");
     //   final userId = await Authentication.getToken("id");
     //   final String projectId = event.projectId.toString();
-    //   final response = await ProjectAPI.cancelProject(projectId, userId, token);
+    //   final response = await ProjectAPI.cancelProject(projectId.toString(), userId.toString(), token.toString());
     //   if (response == "201") {
     //     yield CanceledState();
     //   } else {

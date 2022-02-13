@@ -23,7 +23,20 @@ class _AppliedProjectScreenState extends State<AppliedProjectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Applied Projects'),),
-      body: BlocBuilder<ProjectsBloc, ProjectsStates>(
+      body: BlocConsumer<ProjectsBloc, ProjectsStates>(
+          listenWhen: (prev,current){
+            if(current is ProjectErrors){
+              return true;
+            }return false;
+          },
+          listener: (context,state){
+            if(state is ProjectErrors){
+              errorPopUp(
+                  context,
+                      (){ BlocProvider.of<ProjectsBloc>(context).add(GetAllAppliedProjects());Navigator.pop(context);}
+              );
+            }
+          },
           buildWhen: (prevState,state){
             if(state is AppliedProjectsLoading || state is AppliedProjectsLoaded || state is ProjectErrors ){
               return true;

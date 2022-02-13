@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:forest_tracker/data_layer/models/user.dart';
 
 // ignore: must_be_immutable

@@ -85,10 +85,23 @@ class _ProjectScreenState extends State<ProjectScreen> with AutomaticKeepAliveCl
           )
         ],
       ),
-      body: BlocBuilder<ProjectsBloc, ProjectsStates>(
+      body: BlocConsumer<ProjectsBloc, ProjectsStates>(
+        listenWhen: (prev,current){
+          if(current is ProjectErrors){
+            return true;
+          }return false;
+        },
+        listener: (context,state){
+          if(state is ProjectErrors){
+            errorPopUp(
+                context,
+                    (){context.read<ProjectsBloc>().add(LoadProjects());Navigator.pop(context);}
+            );
+          }
+        },
         // ignore: missing_return
         buildWhen: (prevState,state){
-          if(state is ProjectsLoading||state is ProjectsLoaded || state is ProjectErrors ){
+          if(state is ProjectsLoading||state is ProjectsLoaded ){
             return true;
           }
           return false;

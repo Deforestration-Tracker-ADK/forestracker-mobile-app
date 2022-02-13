@@ -52,7 +52,7 @@ class ReportsBloc extends Bloc<ReportsEvent,ReportsState>{
     // yield SendReportsLoading();
     // final token = await Authentication.getToken("token");
     // final userId = await Authentication.getToken("id");
-    // var response = await ReportAPI.getAllSendReports(userId: userId, token: token);
+    // var response = await ReportAPI.getAllSendReports(userId: userId.toString(), token: token.toString());
     // if(response is String){
     //   yield SendReportsErrors(error: response);
     // }else{

@@ -79,8 +79,7 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
           if(state is ReportsErrors){
             errorPopUp(
                 context,
-                    (){context.read<ReportsBloc>().add(LoadDraftReports());Navigator.pop(context);},
-                msg: state.error
+                    (){context.read<ReportsBloc>().add(LoadDraftReports());Navigator.pop(context);}
             );
           }
         },

@@ -46,8 +46,7 @@ class SendReportPage extends StatelessWidget {
           if(state is SendReportsErrors){
             errorPopUp(
                 context,
-                    (){context.read<ReportsBloc>().add(LoadSendReports());Navigator.pop(context);},
-                msg: state.error
+                    (){context.read<ReportsBloc>().add(LoadSendReports());Navigator.pop(context);}
             );
           }
         },
