@@ -5,7 +5,6 @@ import 'package:forest_tracker/logic_layer/cubits/navigation_cubit.dart';
 import 'package:forest_tracker/logic_layer/states/connection_state.dart';
 import 'package:forest_tracker/logic_layer/states/navigation_state.dart';
 import 'package:forest_tracker/presentation_layer/screens/report_screen.dart';
-import 'package:forest_tracker/presentation_layer/screens/user_screen.dart';
 
 import 'project_screen.dart';
 import 'home_screen.dart';
@@ -14,22 +13,23 @@ import 'map_screen.dart';
 class MainPage extends StatelessWidget {
   static const String id = 'home_screen';
 
-  static final PageController _controller = PageController();
+  final PageController _pageController = PageController(keepPage: false);
   final List<Widget> _body = [
     HomePage(),
     ProjectScreen(),
     MapPage(),
     ReportPage(),
-    UserPage(
-      name: 'UserName',
-    )
   ];
 
-  static changePage(int value, BuildContext context) {
+  changePage(int value, BuildContext context) {
     final cubit = context.read<NavigationCubit>();
     cubit.navigate(value);
-    _controller.jumpToPage(value);
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(value);
+      }
+
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +77,9 @@ class MainPage extends StatelessWidget {
             },
             child: PageView(
               physics: NeverScrollableScrollPhysics(),
-              onPageChanged: (value) => changePage(value, context),
-              controller: _controller,
+              controller: _pageController,
               children: _body,
+
             ),
           ),
           bottomNavigationBar: BlocBuilder<NavigationCubit, NavigationStates>(
@@ -100,8 +100,6 @@ class MainPage extends StatelessWidget {
                     icon: Icon(Icons.location_on_rounded), label: "location"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.folder_rounded), label: "folder"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.person_pin_rounded), label: "profile"),
               ],
             );
           })),

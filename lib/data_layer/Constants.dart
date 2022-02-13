@@ -3,6 +3,7 @@ abstract class URLS{
 
   static final String userLoginUrl = baseUrl + "/auth/login";
   static final String userLoginCheckUrl = baseUrl + "/volunteer/get/?volunteer_id=";
+  static final String forgetPasswordUrl = baseUrl + "/auth/change/password";
 
 
   static final String getAllProjectsUrl = baseUrl + "/opportunity/approved";

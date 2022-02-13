@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forest_tracker/data_layer/Constants.dart';
 import 'package:forest_tracker/logic_layer/events/login_event.dart';
 import 'package:forest_tracker/logic_layer/blocs/login_bloc.dart';
 import 'package:forest_tracker/logic_layer/cubits/navigation_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:forest_tracker/presentation_layer/utilities/validation.dart';
 import 'package:forest_tracker/presentation_layer/utilities/components.dart';
 import 'package:forest_tracker/presentation_layer/utilities/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'main_screen.dart';
 
@@ -48,29 +50,32 @@ class LoginScreen extends StatelessWidget {
                     height: 48.0,
                   ),
                   BlocConsumer<LoginBloc, LoginStates>(
-                      listener: (context,state){
-                        if(state is LoginWithInvalidCredentials){
-                          showDialog(
-                              context: context,
-                              builder: (context)=>AlertDialog(
+                      listener: (context, state) {
+                    if (state is LoginWithInvalidCredentials) {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
                                 elevation: 5,
                                 title: Text('Login Error'),
                                 content: Text(state.errorMsg),
                               ));
-                        }
-                      },
-                      builder: (context, state) {
-                        if (state is InitialState|| state is LogoutState ||state is LoginWithInvalidCredentials) {
-                          return loginForm(context);
-                        } else if (state is LoginWithCorrectCredentials) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {//used to return circular progress indicator until the frame build
-                            BlocProvider.of<NavigationCubit>(context).navigate(0);
-                            Navigator.pushReplacementNamed(context, MainPage.id);});
-                          return Center(child: CircularProgressIndicator());
-                        }else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      }),
+                    }
+                  }, builder: (context, state) {
+                    if (state is InitialState ||
+                        state is LogoutState ||
+                        state is LoginWithInvalidCredentials) {
+                      return loginForm(context);
+                    } else if (state is LoginWithCorrectCredentials) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        //used to return circular progress indicator until the frame build
+                        BlocProvider.of<NavigationCubit>(context).navigate(0);
+                        Navigator.pushReplacementNamed(context, MainPage.id);
+                      });
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  }),
                 ],
               ),
             ),
@@ -129,6 +134,15 @@ class LoginScreen extends StatelessWidget {
                 }
               },
             ),
+            SizedBox(
+              height: 24.0,
+            ),
+            Center(
+              child: new InkWell(
+                  child: new Text('Forget Password'),
+                  onTap: () => launch(
+                      URLS.forgetPasswordUrl)),
+            )
           ],
         ));
   }

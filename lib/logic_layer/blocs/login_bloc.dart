@@ -70,7 +70,7 @@ class LoginBloc extends Bloc<LoginEvents,LoginStates>{
   }
 
   Future<User> getUser(String email, String password) async{
-    var user = ['username', '123456'];
+    var user = ['username', 'Avi123@'];
     if(user.contains(email) && user.contains(password)){
       Authentication.setToken("token", 'user');
       Authentication.setToken("userID", '1');

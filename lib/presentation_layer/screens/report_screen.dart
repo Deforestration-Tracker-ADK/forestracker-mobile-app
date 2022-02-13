@@ -16,7 +16,7 @@ class ReportPage extends StatefulWidget {
   State<ReportPage> createState() => _ReportPageState();
 }
 
-class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMixin {
+class _ReportPageState extends State<ReportPage> {
   final _key = GlobalKey<AnimatedListState>();
 
   @override
@@ -51,7 +51,6 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Report Page'),
@@ -124,6 +123,4 @@ class _ReportPageState extends State<ReportPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
 }

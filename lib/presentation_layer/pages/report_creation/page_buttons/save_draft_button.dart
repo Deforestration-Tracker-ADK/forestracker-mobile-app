@@ -48,7 +48,6 @@ class SaveDraftButton extends StatelessWidget {
             //to pop up report page
             Navigator.pop(context);
             context.read<ReportsBloc>().add(LoadDraftReports());
-            MainPage.changePage(3, context);
           }
           else if(state is InvalidReportName){
             //to pop up notification

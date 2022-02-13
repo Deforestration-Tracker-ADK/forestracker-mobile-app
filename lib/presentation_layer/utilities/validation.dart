@@ -10,7 +10,7 @@ String validatePassword(value) {
   } else if (value.length < 6) {
     return "Password should be at least 6 characters";
   } else if (!pwReg.hasMatch(value)) {
-    return "Password must follow the given constraints.";
+    return "Password must contains capital letter,number and a special char.";
   }
   return null;
 }

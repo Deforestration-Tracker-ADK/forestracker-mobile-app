@@ -49,7 +49,6 @@ class SendReportButton extends StatelessWidget {
           //to pop up report page
           Navigator.pop(context);
           context.read<ReportsBloc>().add(LoadDraftReports());
-          MainPage.changePage(3, context);
         }
       },
       child: customButton(
